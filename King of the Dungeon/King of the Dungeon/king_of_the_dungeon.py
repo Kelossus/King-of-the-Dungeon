@@ -37,7 +37,7 @@ class HUDLayer(Layer):
         self.add(self.count_gatherer)
         self.add(self.count_corpses)
 
-    def update(self, corpses, weapons, gold, miners, gatherers, orcs):
+    def update(self, corpses, weapons, gold, miners, gatherers):
         pass
 
 
