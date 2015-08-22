@@ -12,7 +12,7 @@ window_original = (1920, 1080)
 # misc
 start_gold = 9999999999
 start_corpses = 999999
-start_weapons = 4
+start_weapons = 9999999999
 gold_objective = 10000
 
 house_scale= 6
@@ -38,13 +38,23 @@ farmers = { # (cost, success rate, gathred gold, gathered corpses, gathered weap
 }
 
 spawn_place = {
-	"goblin": 			(400, 200),
-	"hobgoblin": 		(500, 180),
-	"orc": 				(600, 190), 
-	"madgnome": 		(700, 200),
-	"necromancer": 		(800, 240),
-	"gatherer":			(900, 260),
-	"miner":			(900, 400)
+	"goblin": 			(75, 200),
+	"hobgoblin": 		(350, 180),
+	"orc": 				(200, 350), 
+	"madgnome": 		(925, 160),
+	"necromancer": 		(1055, 240),
+	"gatherer":			(1200, 260),
+	"miner":			(1000, 420)
+}
+
+minion_move_to = {
+	"goblin": 			(0, -213),
+	"hobgoblin": 		(0, -180),
+	"orc": 				(0, -350), 
+	"madgnome": 		(0, -162),
+	"necromancer": 		(0, -240),
+	"gatherer":			(0, -273),
+	"miner":			(270, 0)
 }
 
 minion_move_time = 3
