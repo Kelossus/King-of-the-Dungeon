@@ -42,7 +42,13 @@ class Logic(EventDispatcher):
             'gatherer': 0
         }
 
-        self.orcs = 0
+        self.soldier_each = {
+            "goblin": 0,
+            "hobgoblin": 0,
+            "orc": 0,
+            "madgnome": 0,
+            "necromancer": 0
+        }
 
         self.soldiers = Queue()
 
@@ -68,10 +74,16 @@ class Logic(EventDispatcher):
                 
                 self.soldiers.put(data.soldiers[minion][0])
                 if minion == 'madgnome':
+
                     self.soldiers.put(data.soldiers[minion][0])
                     self.soldiers.put(data.soldiers[minion][0])
                 print("supersoldier")
                 self.dynamic_layer.invoke(minion)
+                self.soldier_each[minion] +=1
+                self.hud_layer.update(self.corpses, self.weapons, self.gold,
+                 self.farmers["miner"], self.farmers["gatherer"], self.soldier_each["goblin"], 
+                 self.soldier_each["hobgoblin"], self.soldier_each["orc"], self.soldier_each["madgnome"],
+                 self.soldier_each["necromancer"] )
                 return True
         else:
             corpses = self.corpses - data.farmers[minion][1]
@@ -81,14 +93,20 @@ class Logic(EventDispatcher):
                 self.farmers[minion] += 1
                 print("chinofarmer")
                 self.dynamic_layer.invoke(minion)
+                self.farmers[minion] +=1
+                self.hud_layer.update(self.corpses, self.weapons, self.gold,
+                 self.farmers["miner"], self.farmers["gatherer"], self.soldier_each["goblin"], 
+                 self.soldier_each["hobgoblin"], self.soldier_each["orc"], self.soldier_each["madgnome"],
+                 self.soldier_each["necromancer"] )
                 return True
         return False
 
 
     def update(self):
         self.hud_layer.update(self.corpses, self.weapons, self.gold,
-                              self.farmers['miner'], self.farmers['gatherer'],
-                              self.orcs)
+                 self.farmers["miner"], self.farmers["gatherer"], self.soldier_each["goblin"], 
+                 self.soldier_each["hobgoblin"], self.soldier_each["orc"], self.soldier_each["madgnome"],
+                 self.soldier_each["necromancer"] )
         self.fight()
         self.farm()
 

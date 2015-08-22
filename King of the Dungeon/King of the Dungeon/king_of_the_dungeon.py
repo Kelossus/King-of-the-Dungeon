@@ -37,7 +37,8 @@ class HUDLayer(Layer):
         self.add(self.count_gatherer)
         self.add(self.count_corpses)
 
-    def update(self, corpses, weapons, gold, miners, gatherers, orcs):
+    def update(self, corpses, weapons, gold, miners, gatherers, goblins, hobgoblins, orcs
+        , madgnomes, necromancers):
         pass
 
 
@@ -142,7 +143,27 @@ class DynamicLayer(Layer):
 
 
     def bring(self, minion):
-        pass
+        if minion == "gatherer":
+            mini = Sprite("resources/gatherer_coming.gif", position =minion_move_to[minion])
+            mini.scale = minion_scale
+            self.add(mini)               
+            mini.do(MoveBy(spawn_place[minion], minion_move_time) + CallFunc(mini.kill))
+
+            mini = Sprite("resources/gatherer.gif", position = spawn_place[minion])
+            mini.scale = minion_scale
+            self.add(mini)               
+            mini.do(MoveBy(minion_move_to[minion], minion_move_time) + CallFunc(mini.kill))
+        elif minion == "miner":
+            mini = Sprite("resources/gatherer.gif", position =minion_move_to[minion])
+            mini.scale = minion_scale
+            self.add(mini)               
+            mini.do(MoveBy( spawn_place[minion], minion_move_time) + CallFunc(mini.kill))
+
+            mini = Sprite("resources/gatherer.gif", position = spawn_place[minion])
+            mini.scale = minion_scale
+            self.add(mini)               
+            mini.do(MoveBy(minion_move_to[minion], minion_move_time) + CallFunc(mini.kill))
+
 
 class StaticLayer(Layer):
     def __init__(self, logic):
