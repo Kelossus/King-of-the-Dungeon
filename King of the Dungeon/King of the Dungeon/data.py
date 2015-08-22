@@ -27,9 +27,9 @@ soldiers = { # ((attack, defense), corpse cost, weapon cost)
 	"necromancer": 		((0,1), 0, 0) # costs gold
 }
 
-farmers = { # (cost, gathred gold, gathered corpses, gathered weapons)
-	"miner": 			(1, 5, 0, 0),
-	"gatherer": 		(1, 1, 5, 1)
+farmers = { # (cost, success rate, gathred gold, gathered corpses, gathered weapons)
+	"miner": 			(1, 0.01, 5, 0, 0),
+	"gatherer": 		(1, 0.08, 1, 5, 1)
 }
 
 

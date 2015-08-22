@@ -28,9 +28,6 @@
   <ItemGroup>
     <Compile Include="king_of_the_dungeon.py" />
     <Compile Include="data.py" />
-    <Compile Include="module1.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="singletons.py">
       <SubType>Code</SubType>
     </Compile>

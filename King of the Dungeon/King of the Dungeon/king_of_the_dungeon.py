@@ -11,7 +11,7 @@ from pyglet.image import load_animation
 
 from data import *
 
-from singletons import gold, logic
+from singletons import Gold, Logic
 
 class HUDLayer(Layer):
     def __init__(self):
@@ -37,61 +37,65 @@ class HUDLayer(Layer):
         self.add(self.count_gatherer)
         self.add(self.count_corpses)
 
+    def update(self, corpses, weapons, gold, miners, gatherers, orcs):
+        pass
+
 
 class GUILayer(Menu):
-    def __init__(self, hud):
+    def __init__(self, logic):
         super().__init__()
-        self.HUD_ref = hud
+        self.logic = logic
 
         positions = []
         houses = []
         
         ############   goblin house    ###################
-        house_goblin = ImageMenuItem("resources/goblin_quarters.png", self.spawn_goblin)
+        house_goblin = ImageMenuItem("resources/goblin_quarters.png",
+                                     self.logic.spawn('goblin'))
         houses.append(house_goblin)
         positions.append((100,60))
 
         ############  hobgoblin house  ###################
 
-        house_hobgoblin = ImageMenuItem("resources/hobgoblin_quarters.png", self.spawn_hobgoblin)
+        house_hobgoblin = ImageMenuItem("resources/hobgoblin_quarters.png",
+                                        self.logic.spawn('hobgoblin'))
         houses.append(house_hobgoblin)
         positions.append((200,60))
 
         ############     orc  house    ###################
 
-        house_orc = ImageMenuItem("resources/orc_quarters.png", self.spawn_orc)
+        house_orc = ImageMenuItem("resources/orc_quarters.png",
+                                  self.logic.spawn('orc'))
         houses.append(house_orc)
         positions.append((300,60))
 
         ############  madgnome house   ##################
 
-        house_madgnome = ImageMenuItem("resources/madgnome_quarters.png", self.spawn_madgnome)
+        house_madgnome = ImageMenuItem("resources/madgnome_quarters.png",
+                                       self.logic.spawn('madgnome'))
         houses.append(house_madgnome)
         positions.append((400,60))
 
         ############ necromancer house ###################
 
-        house_necromancer = ImageMenuItem("resources/necromancer_quarters.png", self.spawn_necromancer)
+        house_necromancer = ImageMenuItem("resources/necromancer_quarters.png",
+                                          self.logic.spawn('necromancer'))
         houses.append(house_necromancer)
         positions.append((500,60))
 
         ############  gatherer  house  ###################
 
-        house_gatherer = ImageMenuItem("resources/gatherer_quarters.png", self.spawn_gatherer)
+        house_gatherer = ImageMenuItem("resources/gatherer_quarters.png",
+                                       self.logic.spawn('gatherer'))
         houses.append(house_gatherer)
         positions.append((600, 60))
 
         ############   miner   house   ###################
 
-        house_miner = ImageMenuItem ("resources/miner_quarters.png", self.spawn_miner)
+        house_miner = ImageMenuItem ("resources/miner_quarters.png",
+                                     self.logic.spawn('miner'))
         houses.append(house_miner)
         positions.append((700,60))
-
-        ############   attack button   ###################
-
-        attack_button = MenuItem("ATTACK", None)
-        houses.append(attack_button)
-        positions.append((1000, 500))
 
         ############    create menu    ###################
 
@@ -100,18 +104,6 @@ class GUILayer(Menu):
                          selected_effect=None,
                          unselected_effect=None,
                          layout_strategy=fixedPositionMenuLayout(positions))
-
-
-        ############    animations     ###################
-
-        house_goblin.selected_effect = self.selected_goblin()
-        house_hobgoblin.selected_effect = self.selected_hobgoblin()
-        house_orc.selected_effect = self.selected_orc()
-        house_madgnome.selected_effect = self.selected_madgnome()
-        house_necromancer.selected_effect = self.selected_necromancer()
-        house_gatherer.selected_effect = self.selected_gatherer()
-        house_miner.selected_effect = self.selected_miner()
-
 
     def shake(self):
         """Predefined action that performs a slight rotation and then goes back to the original rotation
@@ -124,111 +116,24 @@ class GUILayer(Menu):
         rot2 = Accelerate(RotateBy(-angle * 2, duration), 2)
         return rot + (rot2 + Reverse(rot2)) * 2 + Reverse(rot)
 
-    def selected_goblin(self):
-        self.HUD_ref.text.element.text = "this is a very dangerous \n hack"
-
-    def selected_hobgoblin(self):
-        self.HUD_ref.text.element.text = "this is a hobvery dangerous \n hack"
-
-    def selected_orc(self):
-        self.HUD_ref.text.element.text = "this is a orcstremely dangerous \n hack"
-
-    def selected_madgnome(self):
-        self.HUD_ref.text.element.text = "dude, it even says mad \n hack"
-
-    def selected_necromancer(self):
-        self.HUD_ref.text.element.text = "corpse and shit \n\n backstab"
-
-    def selected_gatherer(self):
-        self.HUD_ref.text.element.text = "looter \n\n backstab"
-
-    def selected_miner(self):
-        self.HUD_ref.text.element.text = "pickaxe \n poor worker"
-
-    # Spawnning
-
-    def spawn_goblin(self):
-        pass
-
-    def spawn_hobgoblin(self):
-        pass
-
-    def spawn_orc(self):
-        pass
-
-    def spawn_madgnome(self):
-        pass
-
-    def spawn_necromancer(self):
-        pass
-
-    def spawn_gatherer(self):
-        pass
-
-    def spawn_miner(self):
-        pass
-
-    def attack(self):
-
-        minion_list = list()
-
-        for i in range (0,int(self.HUD_ref.count_goblin.element.text)):
-            minion_list.append(soldiers.get("goblin")[0])
-
-        for i in range (0,int(self.HUD_ref.count_hobgoblin.element.text)):
-            minion_list.append(soldiers.get("hobgoblin")[0])
-
-        for i in range (0,int(self.HUD_ref.count_orc.element.text)):
-            minion_list.append(soldiers.get("orc")[0])
-
-        for i in range (0,int(self.HUD_ref.count_madgnome.element.text)):
-            minion_list.append(soldiers.get("madgnome")[0])
-
-        for i in range (0,int(self.HUD_ref.count_necro.element.text)):
-            minion_list.append(soldiers.get("necromancer")[0])
-
-        random.shuffle(minion_list)
-
-        horde_count = 0
-
-        hunter_list = list()
-
-        for i in range (4):
-            for j in range(waves[horde_count-1][i]):
-                hunter_list.append(hunters[i])
-
-        hunter_list = [[ hunters[i]
-                             for j in range(0, waves[horde_count-1][i])]
-                                    for i in range(0,4) ]
-
-        random.shuffle(hunter_list)
-
-        print (minion_list)
-        print (hunter_list)
-
-        # self.count_goblin = Label("5", x=200, y=300)
-        # self.count_hobgoblin = Label("0", x=250, y=300)
-        # self.count_orc = Label("0", x=300, y=300)
-        # self.count_madgnome = Label("0", x=350, y=300)
-        # self.count_necro = Label("0", x=400, y=300)
-        # self.count_miner = Label("0", x=450, y=300)
-        # self.count_gatherer = Label("0", x=500, y=300)
-        # self.count_corpses = Label("0", x=550, y=300)
-
-
 class DynamicLayer(Layer):
-    pass
+    def __init__(self):
+        super().__init__()
+        GUILayer.push_handlers(self)
+
+    def invoke(self, minion):
+        pass
+
+    def bring(self, minion):
+        pass
 
 class StaticLayer(Layer):
     def __init__(self):
         super().__init__()
 
-        self.monster =  Label("fuck you monstwr", x=700, y=500 )
-        # self.monster = Sprite(load_animation("resources/monster.gif"),
-        #        position = monster_pos)
-
-        gold.init(self)
-
+        # self.monster = Sprite("resource/monster.gif", position = monster_pos)
+        self.monster = Sprite(load_animation("resources/monster.gif"), position = monster_pos)
+        self.gold = Gold(self)
 
         self.add(self.monster)
 
@@ -255,11 +160,15 @@ class RootLayer(Layer):
         self.scale_x = ws[0]/window_original[0]
         self.scale_y = ws[1]/window_original[1]
 
-        self.add(GroundLayer(), z=0)
-        self.add(StaticLayer(), z=1)
-        hud = HUDLayer()
-        self.add(hud,           z=2)
-        self.add(GUILayer(hud), z=3)
+        dynamic_layer = DynamicLayer()
+        hud_layer = HUDLayer()
+        self.logic = Logic(dynamic_layer, hud_layer)
+
+        self.add(GroundLayer(),        z=0)
+        self.add(StaticLayer(),        z=1)
+        self.add(DynamicLayer(),       z=2)
+        self.add(GUILayer(self.logic), z=3)
+        self.add(HUDLayer(),           z=4)
 
 
 def main():
