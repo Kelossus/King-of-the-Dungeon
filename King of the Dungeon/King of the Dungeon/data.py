@@ -1,3 +1,17 @@
+﻿# window
+window = {
+    'width': 1280,
+    'height': 720,
+    'caption': "King of the Dungeon",
+    "fullscreen": False,
+    'resizable': True
+}
+
+window_original = (1920, 1080)
+
+# static positioning
+monster_pos = (500, 500)
+gold_pos = ((100, 100), (300, 300))
 
 # minions
 

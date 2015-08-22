@@ -83,9 +83,3 @@ class DataBoard(Menu):
 
     def on_quit( self ):
         pyglet.app.exit()
-
-class BackgroundLayer(Layer):
-    def __init__(self):
-        super(BackgroundLayer, self).__init__()
-        self.background_sprite = Sprite("background.png")
-        self.add(background_sprite)
