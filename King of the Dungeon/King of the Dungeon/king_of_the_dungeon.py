@@ -16,12 +16,13 @@ class HUDLayer(Layer):
 
         self.text = Label("aaaa", x=100, y=280 )
         self.count_goblin = Label("0", x=200, y=300)
-        self.count_hobgoblin =Label("0", x=250, y=300)
+        self.count_hobgoblin = Label("0", x=250, y=300)
         self.count_orc = Label("0", x=300, y=300)
         self.count_madgnome = Label("0", x=350, y=300)
         self.count_necro = Label("0", x=400, y=300)
         self.count_miner = Label("0", x=450, y=300)
         self.count_gatherer = Label("0", x=500, y=300)
+        self.count_corpses = Label("0", x=550, y=300)
 
         self.add(self.text)
         self.add(self.count_goblin)
@@ -31,6 +32,7 @@ class HUDLayer(Layer):
         self.add(self.count_necro)
         self.add(self.count_miner)
         self.add(self.count_gatherer)
+        self.add(self.count_corpses)
 
 
 class GUILayer(Menu):
@@ -40,7 +42,7 @@ class GUILayer(Menu):
 
         positions = []
         houses = []
-
+        
         ############   goblin house    ###################
         house_goblin = ImageMenuItem("resources/goblin_quarters.png", self.spawn_goblin)
         houses.append(house_goblin)
