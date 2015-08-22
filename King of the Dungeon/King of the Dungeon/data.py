@@ -13,14 +13,17 @@ window_original = (1920, 1080)
 start_gold = 7
 start_corpses = 9999
 start_weapons = 9999
-gold_objective = 10000
+gold_objective = 100
+
+update_delay = 0.5
 
 house_scale= 6
 minion_scale=1.5 	
 
 # static positioning
 monster_pos = (650, 750)
-gold_pos = ((100, 100), (300, 300))
+gold_pos = ((200, 700), (1100, 700))
+gold_scale = 1.5
 
 # minions
 

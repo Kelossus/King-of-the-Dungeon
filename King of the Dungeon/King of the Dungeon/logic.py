@@ -8,7 +8,7 @@ from pyglet.image import load
 from pyglet.event import EventDispatcher
 
 import data
-from data import gold_pos, gold_objective, necromancer_gold_cost
+from data import gold_pos, gold_scale, gold_objective, necromancer_gold_cost
 
 class Gold():
     def __init__(self, parent):
@@ -21,14 +21,16 @@ class Gold():
         self.parent = parent
 
     def on_gold_gain(self, current_value):
-        index = int(len(self.images) * current_value / gold_objective)
-        if index != self.current_index and index < len(self.images):
+        index = int(2 * len(self.images) * current_value / gold_objective)
+        if index != self.current_index and index < len(self.images)*2:
             self.current_index = index
             try:
                 self.parent.remove('gold' + str(int(self.update_turn) + 1))
             except:
                 pass
-            self.parent.add(Sprite(self.images[index], position = gold_pos[int(self.update_turn) + 1]))
+            self.parent.add(Sprite(self.images[index//2],
+                            position = gold_pos[int(self.update_turn)],
+                            scale = gold_scale))
             self.update_turn = not self.update_turn
 
 class Logic(EventDispatcher):
@@ -122,7 +124,7 @@ class Logic(EventDispatcher):
 
     def farm(self):
         for key in data.farmers:
-            success_rate = data.farmers[key][0]
+            success_rate = data.farmers[key][1]
             if not success_rate * self.farmers[key] < random():
                 self.corpses += data.farmers[key][2]
                 self.weapons += data.farmers[key][3]

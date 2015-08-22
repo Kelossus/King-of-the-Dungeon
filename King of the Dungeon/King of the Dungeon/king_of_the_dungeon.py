@@ -133,6 +133,8 @@ class GUILayer(Menu):
 class DynamicLayer(Layer):
     def __init__(self):
         super().__init__()
+        self.gathval = True
+        self.minval = True
 
 
     def invoke(self, minion):
@@ -145,25 +147,32 @@ class DynamicLayer(Layer):
 
     def bring(self, minion):
         if minion == "gatherer":
-            mini = Sprite("resources/gatherer_coming.gif", position =minion_move_to[minion])
-            mini.scale = minion_scale
-            self.add(mini)               
-            mini.do(MoveBy(spawn_place[minion], minion_move_time) + CallFunc(mini.kill))
-
-            mini = Sprite("resources/gatherer.gif", position = spawn_place[minion])
-            mini.scale = minion_scale
-            self.add(mini)               
-            mini.do(MoveBy(minion_move_to[minion], minion_move_time) + CallFunc(mini.kill))
+            if self.gathval:
+                mini = Sprite("resources/gatherer_coming.gif", position =(1200, -13))
+                mini.scale = minion_scale
+                self.add(mini)               
+                mini.do(MoveBy((0, 273), minion_move_time) + CallFunc(mini.kill))
+                self.gathval = False
+            else:
+                mini1 = Sprite("resources/gatherer.gif", position = spawn_place[minion])
+                mini1.scale = minion_scale
+                self.add(mini1)               
+                mini1.do(MoveBy(minion_move_to[minion], minion_move_time) + CallFunc(mini1.kill))
+                self.gathval = True
         elif minion == "miner":
-            mini = Sprite("resources/gatherer.gif", position =minion_move_to[minion])
-            mini.scale = minion_scale
-            self.add(mini)               
-            mini.do(MoveBy( spawn_place[minion], minion_move_time) + CallFunc(mini.kill))
-
-            mini = Sprite("resources/gatherer.gif", position = spawn_place[minion])
-            mini.scale = minion_scale
-            self.add(mini)               
-            mini.do(MoveBy(minion_move_to[minion], minion_move_time) + CallFunc(mini.kill))
+            if self.minval:
+                mini = Sprite("resources/miner.gif", position =(1270, 420))
+                mini.scale = minion_scale
+                mini.scale_x = -minion_scale
+                self.add(mini)               
+                mini.do(MoveBy( (-270, 0), minion_move_time) + CallFunc(mini.kill) )
+                self.minval = False
+            else:
+                mini1 = Sprite("resources/miner.gif", position = spawn_place[minion])
+                mini1.scale = minion_scale
+                self.add(mini1)               
+                mini1.do(MoveBy(minion_move_to[minion], minion_move_time) + CallFunc(mini1.kill))
+                self.minval = True
 
 
 class StaticLayer(Layer):
@@ -177,8 +186,6 @@ class StaticLayer(Layer):
         logic.push_handlers(self.gold)
 
         self.add(self.monster)
-
-
 
 class GroundLayer(Layer):
     def __init__(self):
@@ -207,13 +214,13 @@ class RootLayer(Layer):
         hud_layer = HUDLayer()
         self.logic = Logic(dynamic_layer, hud_layer)
 
-        self.do(Repeat(CallFunc(self.logic.update) + Delay(1)))
+        self.do(Repeat(CallFunc(self.logic.update) + Delay(update_delay)))
 
-        self.add(GroundLayer(),        z=0)
-        self.add(StaticLayer(self.logic),        z=1)
-        self.add(dynamic_layer,       z=2)
-        self.add(GUILayer(self.logic), z=3)
-        self.add(hud_layer,           z=4)
+        self.add(GroundLayer(),           z=0)
+        self.add(StaticLayer(self.logic), z=1)
+        self.add(dynamic_layer,           z=2)
+        self.add(GUILayer(self.logic),    z=3)
+        self.add(hud_layer,               z=4)
 
 
 
