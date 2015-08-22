@@ -1,28 +1,3 @@
-from __future__ import division, print_function, unicode_literals
-
-# This code is so you can run the samples without installing the package
-import sys
-import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
-
-
-
-import cocos
-
-from cocos.director import *
-from cocos.menu import *
-from cocos.scene import *
-from cocos.actions import *
-from cocos.layer import *
-from cocos.scenes import *
-from cocos.sprite import *
-
-import pyglet
-
-from pyglet import image
-from pyglet import font
-from pyglet.gl import *
-
 class MainMenu(Menu):
     def __init__( self ):
         super( MainMenu, self ).__init__("TITLE" )
@@ -109,56 +84,8 @@ class DataBoard(Menu):
     def on_quit( self ):
         pyglet.app.exit()
 
-class BackgroundLayer(cocos.layer.Layer):
+class BackgroundLayer(Layer):
     def __init__(self):
         super(BackgroundLayer, self).__init__()
-        self.img = pyglet.resource.image('background_image.png')
-        self.text = cocos.text.Label("dd", x=100, y=280 )
-        self.add (self.text)
-
-    def update_text(self, num):
-        
-        # Update self.text
-        if   num == 0:
-            self.text.element.text += " +"
-
-        elif num == 1:
-            self.text.element.text += " +"
-
-        elif num == 2:
-            self.text.element.text += " +"
-
-        elif num == 3:
-            self.text.element.text += " +"
-
-        elif num == 4:
-            self.text.element.text += " +"
-
-        elif num == 5:
-            self.text.element.text += " +"
-
-    def draw( self ):
-        glColor4ub(255, 255, 255, 255)
-        glPushMatrix()
-        self.transform()
-        self.img.blit(0,0)
-        glPopMatrix()
-
-def main():
-
-    pyglet.font.add_directory('.')
-
-    director.init( resizable=True)
-
-    # Scenes
-    main_scene = cocos.scene.Scene()
-
-
-    # Add layers
-    main_scene.add( BackgroundLayer(), z=0 )
-    main_scene.add(DataBoard())
-
-    director.run( main_scene )
-
-if __name__ == '__main__':
-    main()
+        self.background_sprite = Sprite("background.png")
+        self.add(background_sprite)
