@@ -10,13 +10,13 @@ window = {
 window_original = (1920, 1080)
 
 # misc
-start_gold = 9999999999
-start_corpses = 999999
-start_weapons = 9999999999
+start_gold = 7
+start_corpses = 9999
+start_weapons = 9999
 gold_objective = 10000
 
 house_scale= 6
-minion_scale=3
+minion_scale=1.5 	
 
 # static positioning
 monster_pos = (650, 750)

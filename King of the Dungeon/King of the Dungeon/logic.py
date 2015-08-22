@@ -1,4 +1,4 @@
-from time import clock
+﻿from time import clock
 from random import random
 from queue import Queue
 
@@ -21,11 +21,13 @@ class Gold():
         self.parent = parent
 
     def on_gold_gain(self, current_value):
-        index = len(self.images) * current_value / gold_objective
+        index = int(len(self.images) * current_value / gold_objective)
         if index != self.current_index and index < len(self.images):
             self.current_index = index
-
-            self.parent.remove('gold' + str(int(self.update_turn) + 1))
+            try:
+                self.parent.remove('gold' + str(int(self.update_turn) + 1))
+            except:
+                pass
             self.parent.add(Sprite(self.images[index], position = gold_pos[int(self.update_turn) + 1]))
             self.update_turn = not self.update_turn
 
@@ -42,6 +44,7 @@ class Logic(EventDispatcher):
             'gatherer': 0
         }
 
+
         self.soldier_each = {
             "goblin": 0,
             "hobgoblin": 0,
@@ -50,12 +53,15 @@ class Logic(EventDispatcher):
             "necromancer": 0
         }
 
+
         self.soldiers = Queue()
+        self.necromancers = 0
+        self.hunters = Queue()
 
         self.dynamic_layer = dynamic_layer
         self.hud_layer = hud_layer
 
-        
+        self.current_wave = 0
 
     def spawn(self, minion):
         if minion in data.soldiers:
@@ -72,42 +78,46 @@ class Logic(EventDispatcher):
                 self.dispatch_event('on_gold_gain', self.gold)
 
                 
-                self.soldiers.put(data.soldiers[minion][0])
-                if minion == 'madgnome':
+                self.soldiers.put((minion, data.soldiers[minion][0]))
 
-                    self.soldiers.put(data.soldiers[minion][0])
-                    self.soldiers.put(data.soldiers[minion][0])
-                print("supersoldier")
+                self.soldiers.put((minion, data.soldiers[minion][0]))
+                self.soldiers.put((minion, data.soldiers[minion][0]))
+
                 self.dynamic_layer.invoke(minion)
                 self.soldier_each[minion] +=1
                 self.hud_layer.update(self.corpses, self.weapons, self.gold,
-                 self.farmers["miner"], self.farmers["gatherer"], self.soldier_each["goblin"], 
-                 self.soldier_each["hobgoblin"], self.soldier_each["orc"], self.soldier_each["madgnome"],
-                 self.soldier_each["necromancer"] )
+                self.farmers["miner"], self.farmers["gatherer"], self.soldier_each["goblin"], 
+                self.soldier_each["hobgoblin"], self.soldier_each["orc"], self.soldier_each["madgnome"],
+                self.soldier_each["necromancer"] )
                 return True
         else:
-            corpses = self.corpses - data.farmers[minion][1]
+            corpses = self.corpses - data.farmers[minion][0]
 
             if corpses >= 0:
                 self.corpses = corpses
                 self.farmers[minion] += 1
-                print("chinofarmer")
                 self.dynamic_layer.invoke(minion)
                 self.farmers[minion] +=1
                 self.hud_layer.update(self.corpses, self.weapons, self.gold,
-                 self.farmers["miner"], self.farmers["gatherer"], self.soldier_each["goblin"], 
-                 self.soldier_each["hobgoblin"], self.soldier_each["orc"], self.soldier_each["madgnome"],
-                 self.soldier_each["necromancer"] )
+                self.farmers["miner"], self.farmers["gatherer"], self.soldier_each["goblin"], 
+                self.soldier_each["hobgoblin"], self.soldier_each["orc"], self.soldier_each["madgnome"],
+                self.soldier_each["necromancer"] )
                 return True
         return False
 
+    def load_next_wave(self):
+        self.current_wave += 1
+        for i in range(data.waves):
+            for j in range(data.waves[i]):
+                self.hunters.put(data.hunters[i])
 
     def update(self):
         self.hud_layer.update(self.corpses, self.weapons, self.gold,
                  self.farmers["miner"], self.farmers["gatherer"], self.soldier_each["goblin"], 
                  self.soldier_each["hobgoblin"], self.soldier_each["orc"], self.soldier_each["madgnome"],
                  self.soldier_each["necromancer"] )
-        self.fight()
+
+        # self.fight()
         self.farm()
 
     def farm(self):
@@ -122,7 +132,25 @@ class Logic(EventDispatcher):
 
                 self.dynamic_layer.bring(key)
 
-    def fight(self):
-        pass
+    # def fight(self):
+    #     soldier = self.soldiers.get()
+    #     hunter = self.hunters.get()
+
+    #     if soldier[0] == 'orc' and not data.orc_berserk_chance < random():
+    #         hunter[1][1] -= soldier[1][0]
+    #         if not hunter[1][1] > 0:
+    #             self.soldiers.put(soldier)
+    #             return
+
+    #     hunter[1][1] -= soldier[1][0]
+    #     soldier[1][1] -= hunter[1][0]
+
+    #     revived = not self.soldier_each["necromancers"] * data.necromancer_revival_chance < random
+
+    #     if soldier[1][1] > 0 or revived:
+    #         self.soldiers.put(soldier)
+    #     if hunter[1][1] > 0:
+    #         self.hunters.put(hunter)
+
 
 Logic.register_event_type("on_gold_gain")

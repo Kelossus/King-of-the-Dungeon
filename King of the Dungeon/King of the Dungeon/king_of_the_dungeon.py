@@ -17,29 +17,36 @@ class HUDLayer(Layer):
     def __init__(self):
         super().__init__()
 
-        self.text = Label("aaaa", x=100, y=280 )
-        self.count_goblin = Label("5", x=200, y=300)
-        self.count_hobgoblin = Label("0", x=250, y=300)
-        self.count_orc = Label("0", x=300, y=300)
-        self.count_madgnome = Label("0", x=350, y=300)
-        self.count_necro = Label("0", x=400, y=300)
-        self.count_miner = Label("0", x=450, y=300)
-        self.count_gatherer = Label("0", x=500, y=300)
-        self.count_corpses = Label("0", x=550, y=300)
+        self.count_goblin = Label("5", x=200, y=800)
+        self.count_hobgoblin = Label("0", x=250, y=800)
+        self.count_orc = Label("0", x=301, y=800)
+        self.count_madgnome = Label("0", x=350, y=800)
+        self.count_necro = Label("0", x=400, y=800)
+        self.count_miner = Label("0", x=450, y=800)
+        self.count_gatherer = Label("0", x=500, y=800)
+        self.count_corpses = Label("0", x=10, y=800)
+        self.count_weapons = Label("0", x=50, y=820)
+        self.count_gold = Label("0", x =100, y=840)
 
-        self.add(self.text)
-        self.add(self.count_goblin)
-        self.add(self.count_hobgoblin)
-        self.add(self.count_orc)
-        self.add(self.count_madgnome)
-        self.add(self.count_necro)
-        self.add(self.count_miner)
-        self.add(self.count_gatherer)
+        # self.add(self.count_goblin)
+        # self.add(self.count_hobgoblin)
+        # self.add(self.count_orc)
+        # self.add(self.count_madgnome)
+        # self.add(self.count_necro)
+        # self.add(self.count_miner)
+        # self.add(self.count_gatherer)
         self.add(self.count_corpses)
+        self.add(self.count_weapons)
+        self.add(self.count_gold)
 
-    def update(self, corpses, weapons, gold, miners, gatherers, goblins, hobgoblins, orcs
-        , madgnomes, necromancers):
-        pass
+
+
+    def update(self, corpses, weapons, gold, miners, gatherers, goblins, hobgoblins, orcs,
+               madgnomes, necromancers):
+        self.count_corpses.element.text = str(corpses)
+        self.count_weapons.element.text = str(weapons)
+        self.count_gold.element.text = str(gold)
+
 
 
 class GUILayer(Menu):
@@ -132,15 +139,10 @@ class DynamicLayer(Layer):
     def invoke(self, minion):
         mini = Sprite("resources/"+minion+".gif", position = spawn_place[minion])
         mini.scale = minion_scale
-        self.add(mini)
-        print("ok")
-           
+        self.add(mini) 
+
         mini.do(MoveBy(minion_move_to[minion], minion_move_time) + CallFunc(mini.kill))
-        
-        print("amaihere")
-
-
-
+    
 
     def bring(self, minion):
         if minion == "gatherer":

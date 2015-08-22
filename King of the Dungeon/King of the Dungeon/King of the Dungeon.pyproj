@@ -28,12 +28,35 @@
   <ItemGroup>
     <Compile Include="king_of_the_dungeon.py" />
     <Compile Include="data.py" />
-    <Compile Include="singletons.py">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="logic.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="resources\background.png" />
+    <Content Include="resources\cave.png" />
+    <Content Include="resources\gatherer.gif" />
+    <Content Include="resources\gatherer_coming.gif" />
+    <Content Include="resources\gatherer_going.gif" />
+    <Content Include="resources\gatherer_quarters.png" />
+    <Content Include="resources\goblin.gif" />
+    <Content Include="resources\goblin_quarters.png" />
+    <Content Include="resources\gold_1.png" />
+    <Content Include="resources\gold_2.png" />
+    <Content Include="resources\gold_3.png" />
+    <Content Include="resources\gold_4.png" />
+    <Content Include="resources\hobgoblin.gif" />
+    <Content Include="resources\hobgoblin_quarters.png" />
+    <Content Include="resources\madgnome.gif" />
+    <Content Include="resources\madgnome_quarters.png" />
+    <Content Include="resources\miner.gif" />
+    <Content Include="resources\miner_quarters.png" />
+    <Content Include="resources\monster.gif" />
+    <Content Include="resources\necromancer.gif" />
+    <Content Include="resources\necromancer_quarters.png" />
+    <Content Include="resources\orc.gif" />
+    <Content Include="resources\orc_quarters.png" />
   </ItemGroup>
   <Import Condition="Exists($(PtvsTargetsFile))" Project="$(PtvsTargetsFile)" />
   <Import Condition="!Exists($(PtvsTargetsFile))" Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
