@@ -2,6 +2,9 @@
 from cocos.scene import Scene
 from cocos.sprite import Sprite
 from cocos.layer import Layer
+from cocos.text import Label
+from cocos.menu import Menu, ImageMenuItem, fixedPositionMenuLayout
+from cocos.actions import *
 
 from pyglet.image import load_animation
 
@@ -9,16 +12,16 @@ from data import *
 
 class HUDLayer(Layer):
     def __init__(self):
-        super(HUDLayer, self).__init__()
+        super().__init__()
 
-        self.text = cocos.text.Label("aaaa", x=100, y=280 )
-        self.count_goblin = cocos.text.Label("0", x=200, y=300)
-        self.count_hobgoblin = cocos.text.Label("0", x=250, y=300)
-        self.count_orc = cocos.text.Label("0", x=300, y=300)
-        self.count_madgnome = cocos.text.Label("0", x=350, y=300)
-        self.count_necro = cocos.text.Label("0", x=400, y=300)
-        self.count_miner = cocos.text.Label("0", x=450, y=300)
-        self.count_gatherer = cocos.text.Label("0", x=500, y=300)
+        self.text = Label("aaaa", x=100, y=280 )
+        self.count_goblin = Label("0", x=200, y=300)
+        self.count_hobgoblin =Label("0", x=250, y=300)
+        self.count_orc = Label("0", x=300, y=300)
+        self.count_madgnome = Label("0", x=350, y=300)
+        self.count_necro = Label("0", x=400, y=300)
+        self.count_miner = Label("0", x=450, y=300)
+        self.count_gatherer = Label("0", x=500, y=300)
 
         self.add(self.text)
         self.add(self.count_goblin)
@@ -30,71 +33,70 @@ class HUDLayer(Layer):
         self.add(self.count_gatherer)
 
 
-class GUILayer(Layer):
+class GUILayer(Menu):
     def __init__(self, hud):
-        super(DataBoard, self).__init__()
+        super().__init__()
         self.HUD_ref = hud
 
         positions = []
         houses = []
-        
 
         ############   goblin house    ###################
-        house_goblin = ImageMenuItem("resources/goblin_quarters.png", spawn_goblin())
+        house_goblin = ImageMenuItem("resources/goblin_quarters.png", self.spawn_goblin)
         houses.append(house_goblin)
         positions.append((100,60))
 
         ############  hobgoblin house  ###################
 
-        house_hobgoblin = ImageMenuItem("resources/hobgoblin_quarters.png", spawn_hobgoblin)
+        house_hobgoblin = ImageMenuItem("resources/hobgoblin_quarters.png", self.spawn_hobgoblin)
         houses.append(house_hobgoblin)
         positions.append((200,60))
 
         ############     orc  house    ###################
 
-        house_orc = ImageMenuItem("resources/orc_quarters.png", spawn_orc)
+        house_orc = ImageMenuItem("resources/orc_quarters.png", self.spawn_orc)
         houses.append(house_orc)
         positions.append((300,60))
 
         ############  madgnome house   ##################
 
-        house_madgnome = ImageMenuItem("resources/madgnome_quarters.png", spawn_madgnome)
+        house_madgnome = ImageMenuItem("resources/madgnome_quarters.png", self.spawn_madgnome)
         houses.append(house_madgnome)
         positions.append((400,60))
 
         ############ necromancer house ###################
 
-        house_necromancer = ImageMenuItem("resources/necromancer_quarters.png", spawn_necromancer)
+        house_necromancer = ImageMenuItem("resources/necromancer_quarters.png", self.spawn_necromancer)
         houses.append(house_necromancer)
         positions.append((500,60))
 
         ############  gatherer  house  ###################
 
-        house_gatherer = ImageMenuItem("resources/gatherer_quarters.png", spawn_gatherer())
+        house_gatherer = ImageMenuItem("resources/gatherer_quarters.png", self.spawn_gatherer)
         houses.append(house_gatherer)
         positions.append((600, 60))
 
         ############   miner   house   ###################
 
-        house_miner = ImageMenuItem ("resources/miner_quarters.png", spawn_miner())
+        house_miner = ImageMenuItem ("resources/miner_quarters.png", self.spawn_miner)
 
         ############    create menu    ###################
 
-        self.create_menu(   houses,
-                            activated_effect=self.shake(),
-                            selected_effect=None,
-                            unselected_effect=None,
-                            layout_strategy=fixedPositionMenuLayout(positions))
+        self.create_menu(houses,
+                         activated_effect=self.shake(),
+                         selected_effect=None,
+                         unselected_effect=None,
+                         layout_strategy=fixedPositionMenuLayout(positions))
 
         ############    animations     ###################
 
-        house_goblin.selected_effect = selected_goblin()
-        house_hobgoblin.selected_effect = selected_hobgoblin()
-        house_orc.selected_effect = selected_orc()
-        house_madgnome.selected_effect = selected_madgnome()
-        house_necromancer.selected_effect = selected_necromancer()
-        house_gatherer.selected_effect = selected_gatherer()
-        house_miner.selected_effect = selected_miner()
+        house_goblin.selected_effect = self.selected_goblin()
+        house_hobgoblin.selected_effect = self.selected_hobgoblin()
+        house_orc.selected_effect = self.selected_orc()
+        house_madgnome.selected_effect = self.selected_madgnome()
+        house_necromancer.selected_effect = self.selected_necromancer()
+        house_gatherer.selected_effect = self.selected_gatherer()
+        house_miner.selected_effect = self.selected_miner()
 
     def shake(self):
         """Predefined action that performs a slight rotation and then goes back to the original rotation
@@ -156,7 +158,7 @@ class DynamicLayer(Layer):
 
 class StaticLayer(Layer):
     def __init__(self):
-        super(StaticLayer, self).__init__()
+        super().__init__()
 
         self.monster = Sprite(load_animation("resources/monster.gif"),
                position = monster_pos)
@@ -165,7 +167,7 @@ class StaticLayer(Layer):
 
 class GroundLayer(Layer):
     def __init__(self):
-        super(GroundLayer, self).__init__()
+        super().__init__()
 
         ws = director.get_window_size()
 
@@ -180,7 +182,7 @@ class GroundLayer(Layer):
 
 class RootLayer(Layer):
     def __init__(self):
-        super(RootLayer, self).__init__()
+        super().__init__()
         
         ws = director.get_window_size()
         self.scale_x = ws[0]/window_original[0]
