@@ -1,9 +1,10 @@
-﻿from cocos.director import director
+﻿import random
+from cocos.director import director
 from cocos.scene import Scene
 from cocos.sprite import Sprite
 from cocos.layer import Layer
 from cocos.text import Label
-from cocos.menu import Menu, ImageMenuItem, fixedPositionMenuLayout
+from cocos.menu import Menu, ImageMenuItem, MenuItem, fixedPositionMenuLayout
 from cocos.actions import *
 
 from pyglet.image import load_animation
@@ -15,7 +16,7 @@ class HUDLayer(Layer):
         super().__init__()
 
         self.text = Label("aaaa", x=100, y=280 )
-        self.count_goblin = Label("0", x=200, y=300)
+        self.count_goblin = Label("5", x=200, y=300)
         self.count_hobgoblin = Label("0", x=250, y=300)
         self.count_orc = Label("0", x=300, y=300)
         self.count_madgnome = Label("0", x=350, y=300)
@@ -81,6 +82,14 @@ class GUILayer(Menu):
         ############   miner   house   ###################
 
         house_miner = ImageMenuItem ("resources/miner_quarters.png", self.spawn_miner)
+        houses.append(house_miner)
+        positions.append((700,60))
+
+        ############   attack button   ###################
+
+        attack_button = MenuItem("ATTACK", None)
+        houses.append(attack_button)
+        positions.append((1000, 500))
 
         ############    create menu    ###################
 
@@ -89,6 +98,7 @@ class GUILayer(Menu):
                          selected_effect=None,
                          unselected_effect=None,
                          layout_strategy=fixedPositionMenuLayout(positions))
+
 
         ############    animations     ###################
 
@@ -99,6 +109,7 @@ class GUILayer(Menu):
         house_necromancer.selected_effect = self.selected_necromancer()
         house_gatherer.selected_effect = self.selected_gatherer()
         house_miner.selected_effect = self.selected_miner()
+
 
     def shake(self):
         """Predefined action that performs a slight rotation and then goes back to the original rotation
@@ -155,15 +166,63 @@ class GUILayer(Menu):
     def spawn_miner(self):
         pass
 
+    def attack(self):
+
+        minion_list = list()
+
+        for i in range (0,int(self.HUD_ref.count_goblin.element.text)):
+            minion_list.append(soldiers.get("goblin")[0])
+
+        for i in range (0,int(self.HUD_ref.count_hobgoblin.element.text)):
+            minion_list.append(soldiers.get("hobgoblin")[0])
+
+        for i in range (0,int(self.HUD_ref.count_orc.element.text)):
+            minion_list.append(soldiers.get("orc")[0])
+
+        for i in range (0,int(self.HUD_ref.count_madgnome.element.text)):
+            minion_list.append(soldiers.get("madgnome")[0])
+
+        for i in range (0,int(self.HUD_ref.count_necro.element.text)):
+            minion_list.append(soldiers.get("necromancer")[0])
+
+        random.shuffle(minion_list)
+
+        horde_count = 0
+
+        hunter_list = list()
+
+        for i in range (4):
+            for j in range(waves[horde_count-1][i]):
+                hunter_list.append(hunters[i])
+
+        hunter_list = [[ hunters[i]
+                             for j in range(0, waves[horde_count-1][i])]
+                                    for i in range(0,4) ]
+
+        random.shuffle(hunter_list)
+
+        print (minion_list)
+        print (hunter_list)
+
+        # self.count_goblin = Label("5", x=200, y=300)
+        # self.count_hobgoblin = Label("0", x=250, y=300)
+        # self.count_orc = Label("0", x=300, y=300)
+        # self.count_madgnome = Label("0", x=350, y=300)
+        # self.count_necro = Label("0", x=400, y=300)
+        # self.count_miner = Label("0", x=450, y=300)
+        # self.count_gatherer = Label("0", x=500, y=300)
+        # self.count_corpses = Label("0", x=550, y=300)
+
+
 class DynamicLayer(Layer):
     pass
 
 class StaticLayer(Layer):
     def __init__(self):
         super().__init__()
-
-        self.monster = Sprite(load_animation("resources/monster.gif"),
-               position = monster_pos)
+        self.monster =  Label("fuck you monstwr", x=700, y=500 )
+        # self.monster = Sprite(load_animation("resources/monster.gif"),
+        #        position = monster_pos)
 
         self.add(self.monster)
 

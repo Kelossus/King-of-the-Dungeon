@@ -39,14 +39,14 @@ spy_frecuency = 0.05
 
 # treasure hunters
 
-hunters = { # (attack, defense)
-	"vagabound":		(1, 1),
-	"militia":			(1, 2),
-	"looter":			(2, 1),
-	"defender":			(1, 5),
-	"agressor":			(3, 2),
-	"champion":			(5, 5)
-}
+hunters = ( # (attack, defense)
+			(1, 1), # vagabound
+	        (1, 2), # militia
+			(2, 1), # looter
+			(1, 5), # defender
+			(3, 2), # agressor
+			(5, 5)  # champion
+)
 
 waves = ( # (vagabound, militia, looter, defender, agressor, champion)
 	(5, 1, 0, 0, 0)
