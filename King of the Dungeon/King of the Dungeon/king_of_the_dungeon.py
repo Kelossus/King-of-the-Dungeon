@@ -19,6 +19,7 @@ class HUDLayer(Layer):
         self.count_necro = cocos.text.Label("0", x=400, y=300)
         self.count_miner = cocos.text.Label("0", x=450, y=300)
         self.count_gatherer = cocos.text.Label("0", x=500, y=300)
+        self.count_corpses = cocos.text.Label("0", x=600, y=340)
 
         self.add(self.text)
         self.add(self.count_goblin)
@@ -28,6 +29,7 @@ class HUDLayer(Layer):
         self.add(self.count_necro)
         self.add(self.count_miner)
         self.add(self.count_gatherer)
+        self.add(self.count_corpses)
 
 
 class GUILayer(Layer):
