@@ -41,23 +41,23 @@ farmers = { # (cost, success rate, gathred gold, gathered corpses, gathered weap
 }
 
 spawn_place = {
-	"goblin": 			(75, 200),
-	"hobgoblin": 		(350, 180),
-	"orc": 				(200, 350), 
-	"madgnome": 		(925, 160),
-	"necromancer": 		(1055, 240),
-	"gatherer":			(1200, 260),
-	"miner":			(1000, 420)
+	"goblin": 			(220, 350),
+	"hobgoblin": 		(1200, 200),
+	"orc": 				(100, 225), 
+	"madgnome": 		(960, 220),
+	"necromancer": 		(1080, 350),
+	"gatherer":			(350, 210),
+	"miner":			(950, 420)
 }
 
 minion_move_to = {
-	"goblin": 			(0, -213),
-	"hobgoblin": 		(0, -180),
-	"orc": 				(0, -350), 
-	"madgnome": 		(0, -162),
-	"necromancer": 		(0, -240),
-	"gatherer":			(0, -273),
-	"miner":			(270, 0)
+	"goblin": 			(0, -360),
+	"hobgoblin": 		(0, -200),
+	"orc": 				(0, -220), 
+	"madgnome": 		(0, -225),
+	"necromancer": 		(0, -340),
+	"gatherer":			(0, -220),
+	"miner":			(320, 0)
 }
 
 minion_move_time = 3

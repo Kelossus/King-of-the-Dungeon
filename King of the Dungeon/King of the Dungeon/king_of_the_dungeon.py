@@ -160,10 +160,13 @@ class DynamicLayer(Layer):
     def bring(self, minion):
         if minion == "gatherer":
             if self.gathval:
-                mini = Sprite("resources/gatherer_coming.gif", position =(1200, -13))
+
+                mini = Sprite(load_animation("resources/gatherer_coming.gif"),
+                              position = (spawn_place[minion][0] + minion_move_to[minion][0],
+                                          spawn_place[minion][1] + minion_move_to[minion][1]))
                 mini.scale = minion_scale
                 self.add(mini)               
-                mini.do(MoveBy((0, 273), minion_move_time) + CallFunc(mini.kill))
+                mini.do(MoveTo(spawn_place[minion], minion_move_time) + CallFunc(mini.kill))
                 self.gathval = False
             else:
                 mini1 = Sprite("resources/gatherer.gif", position = spawn_place[minion])
@@ -173,11 +176,13 @@ class DynamicLayer(Layer):
                 self.gathval = True
         elif minion == "miner":
             if self.minval:
-                mini = Sprite("resources/miner.gif", position =(1270, 420))
+                mini = Sprite("resources/miner.gif", 
+                            position = (spawn_place[minion ][0] + minion_move_to[minion][0],
+                            spawn_place[minion][1] + minion_move_to[minion][1]))
                 mini.scale = minion_scale
                 mini.scale_x = -minion_scale
                 self.add(mini)               
-                mini.do(MoveBy( (-270, 0), minion_move_time) + CallFunc(mini.kill) )
+                mini.do(MoveTo( (spawn_place[minion]), minion_move_time) + CallFunc(mini.kill) )
                 self.minval = False
             else:
                 mini1 = Sprite("resources/miner.gif", position = spawn_place[minion])
