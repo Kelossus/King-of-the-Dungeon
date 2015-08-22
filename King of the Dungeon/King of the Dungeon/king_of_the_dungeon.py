@@ -130,12 +130,12 @@ class DynamicLayer(Layer):
 
     def invoke(self, minion):
         mini = Sprite("resources/"+minion+".gif", position = spawn_place[minion])
+        mini.scale = minion_scale
         self.add(mini)
         print("ok")
-        if minion == "miner":    
-            mini.do(MoveBy((200,0), minion_move_time) + CallFunc(mini.kill))
-        else:
-            mini.do(MoveBy((0,-200), minion_move_time) + CallFunc(mini.kill))
+           
+        mini.do(MoveBy(minion_move_to[minion], minion_move_time) + CallFunc(mini.kill))
+        
         print("amaihere")
 
 
