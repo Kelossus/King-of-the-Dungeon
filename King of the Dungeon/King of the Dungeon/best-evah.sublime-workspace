@@ -1,0 +1,719 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"hunt",
+				"hunter_list	statement"
+			],
+			[
+				"attac",
+				"attack_button"
+			],
+			[
+				"main",
+				"main_scene	statement"
+			],
+			[
+				"selected_m",
+				"selected_miner"
+			],
+			[
+				"c",
+				"cocos	module"
+			],
+			[
+				"he",
+				"HelloWorld	class"
+			],
+			[
+				"sl",
+				"sleep_ms        Function (mod.rs) : pub fn sleep_ms(ms: u32) {                                         "
+			],
+			[
+				"m",
+				"macro_rules	macro_rules! … ( … )"
+			],
+			[
+				"l",
+				"let"
+			],
+			[
+				"print",
+				"println!	println! …"
+			],
+			[
+				"Ni",
+				"NireIt2"
+			],
+			[
+				"NireI",
+				"NireIt"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "data.py",
+			"settings":
+			{
+				"buffer_size": 1303,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/kelossus/whatever.py",
+			"settings":
+			{
+				"buffer_size": 1546,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "king_of_the_dungeon.py",
+			"settings":
+			{
+				"buffer_size": 5944,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/usr/local/lib/python3.4/dist-packages/cocos/actions/move_actions.py",
+			"settings":
+			{
+				"buffer_size": 7465,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/home/kelossus/Downloads/cocos2d-0.6.3/test/test_moveto.py",
+			"settings":
+			{
+				"buffer_size": 863,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "singletons.py",
+			"settings":
+			{
+				"buffer_size": 3562,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/kelossus/Downloads/cocos2d-0.6.3/test/test_scene_add_scaled.py",
+			"settings":
+			{
+				"buffer_size": 1206,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/home/kelossus/Downloads/cocos2d-0.6.3/test/test_menu_items.py",
+			"settings":
+			{
+				"buffer_size": 2236,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "module1.py",
+			"settings":
+			{
+				"buffer_size": 0,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "# ----------------------------------------------------------------------------\n# cocos2d\n# Copyright (c) 2008-2012 Daniel Moisset, Ricardo Quesada, Rayentray Tappa,\n# Lucio Torre\n# Copyright (c) 2009-2015  Richard Jones, Claudio Canepa\n# All rights reserved.\n#\n# Redistribution and use in source and binary forms, with or without\n# modification, are permitted provided that the following conditions are met:\n#\n#   * Redistributions of source code must retain the above copyright\n#     notice, this list of conditions and the following disclaimer.\n#   * Redistributions in binary form must reproduce the above copyright\n#     notice, this list of conditions and the following disclaimer in\n#     the documentation and/or other materials provided with the\n#     distribution.\n#   * Neither the name of cocos2d nor the names of its\n#     contributors may be used to endorse or promote products\n#     derived from this software without specific prior written\n#     permission.\n#\n# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n# \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS\n# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE\n# COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,\n# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,\n# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER\n# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT\n# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN\n# ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE\n# POSSIBILITY OF SUCH DAMAGE.\n# ----------------------------------------------------------------------------\n#\n# Ideas borrowed from:\n#    pygext: http://opioid-interactive.com/~shang/projects/pygext/\n#    pyglet astraea: http://www.pyglet.org\n#    Grossini's Hell: http://www.pyweek.org/e/Pywiii/\n#\n\"\"\"A `Layer` that implements a simple menu\n\nMenu\n====\n\nThis module provides a Menu class. Menus can contain regular items\n(which trigger a function when selected), toggle items (which toggle a flag when selected),\nor entry items (which lets you enter alphanumeric data).\n\nTo use a menu in your code, just subclass `Menu` and add the menu to an `Scene` or\nanother `Layer`.\n\"\"\"\n\nfrom __future__ import division, print_function, unicode_literals\nfrom six import string_types\n\n__docformat__ = 'restructuredtext'\n\nimport pyglet\nfrom pyglet import font\nfrom pyglet.window import key\nfrom pyglet.gl import *\nimport pyglet.graphics\n\nfrom cocos.layer import *\nfrom cocos.director import *\nfrom cocos.cocosnode import *\nfrom cocos.actions import *\nfrom cocos.sprite import Sprite\nfrom cocos import rect\n\n__all__ = ['Menu',  # menu class\n           'MenuItem', 'ToggleMenuItem',  # menu items classes\n           'MultipleMenuItem', 'EntryMenuItem', 'ImageMenuItem',\n           'ColorMenuItem',\n           'verticalMenuLayout', 'fixedPositionMenuLayout',  # Different menu layout functions\n           'CENTER', 'LEFT', 'RIGHT', 'TOP', 'BOTTOM',  # menu alignment\n           'shake', 'shake_back', 'zoom_in', 'zoom_out'  # Some useful actions for the menu items\n           ]\n\n#\n# Class Menu\n#\n\n# Horizontal Align\nCENTER = font.Text.CENTER\nLEFT = font.Text.LEFT\nRIGHT = font.Text.RIGHT\n\n# Vertical Align\nTOP = font.Text.TOP\nBOTTOM = font.Text.BOTTOM\n\n\ndef verticalMenuLayout(menu):\n    width, height = director.get_window_size()\n    fo = font.load(menu.font_item['font_name'], menu.font_item['font_size'])\n    fo_height = int((fo.ascent - fo.descent) * 0.9)\n\n    if menu.menu_halign == CENTER:\n        pos_x = width // 2\n    elif menu.menu_halign == RIGHT:\n        pos_x = width - menu.menu_hmargin\n    elif menu.menu_halign == LEFT:\n        pos_x = menu.menu_hmargin\n    else:\n        raise Exception(\"Invalid anchor_x value for menu\")\n\n    for idx, i in enumerate(menu.children):\n        item = i[1]\n        if menu.menu_valign == CENTER:\n            pos_y = (height + (len(menu.children) - 2 * idx)\n                     * fo_height - menu.title_height) * 0.5\n        elif menu.menu_valign == TOP:\n            pos_y = (height - ((idx + 0.8) * fo_height)\n                     - menu.title_height - menu.menu_vmargin)\n        elif menu.menu_valign == BOTTOM:\n            pos_y = (0 + fo_height * (len(menu.children) - idx) +\n                     menu.menu_vmargin)\n        item.transform_anchor = (pos_x, pos_y)\n        item.generateWidgets(pos_x, pos_y, menu.font_item,\n                             menu.font_item_selected)\n\n\ndef fixedPositionMenuLayout(positions):\n    def fixedMenuLayout(menu):\n        width, height = director.get_window_size()\n        for idx, i in enumerate(menu.children):\n            item = i[1]\n            pos_x = positions[idx][0]\n            pos_y = positions[idx][1]\n            item.transform_anchor = (pos_x, pos_y)\n            item.generateWidgets(pos_x, pos_y, menu.font_item,\n                                 menu.font_item_selected)\n    return fixedMenuLayout\n\n\nclass Menu(Layer):\n    \"\"\"Abstract base class for menu layers.\n\n    Normal usage is:\n\n     - create a subclass\n     - override __init__ to set all style attributes,\n       and then call `create_menu()`\n     - Finally you shall add the menu to an `Scene` or another `Layer`\n    \"\"\"\n\n    is_event_handler = True  #: Receives pyglet events\n\n    select_sound = None\n    activate_sound = None\n\n    def __init__(self, title=''):\n        super(Menu, self).__init__()\n\n        #\n        # Items and Title\n        #\n        self.title = title\n        self.title_text = None\n\n        self.menu_halign = CENTER\n        self.menu_valign = CENTER\n\n        self.menu_hmargin = 2  # Variable margins for left and right alignment\n        self.menu_vmargin = 2  # Variable margins for top and bottom alignment\n\n        #\n        # Menu default options\n        # Menus can be customized changing these variables\n        #\n\n        # Title\n        self.font_title = {\n            'text': 'title',\n            'font_name': 'Arial',\n            'font_size': 56,\n            'color': (192, 192, 192, 255),\n            'bold': False,\n            'italic': False,\n            'anchor_y': 'center',\n            'anchor_x': 'center',\n            'dpi': 96,\n            'x': 0, 'y': 0,\n        }\n\n        self.font_item = {\n            'font_name': 'Arial',\n            'font_size': 32,\n            'bold': False,\n            'italic': False,\n            'anchor_y': 'center',\n            'anchor_x': 'center',\n            'color': (192, 192, 192, 255),\n            'dpi': 96,\n        }\n        self.font_item_selected = {\n            'font_name': 'Arial',\n            'font_size': 42,\n            'bold': False,\n            'italic': False,\n            'anchor_y': 'center',\n            'anchor_x': 'center',\n            'color': (255, 255, 255, 255),\n            'dpi': 96,\n        }\n\n        self.title_height = 0\n        self.schedule(lambda dt: None)\n\n    def _generate_title(self):\n        width, height = director.get_window_size()\n\n        self.font_title['x'] = width // 2\n        self.font_title['text'] = self.title\n        self.title_label = pyglet.text.Label(**self.font_title)\n        self.title_label.y = height - self.title_label.content_height // 2\n\n        fo = font.load(self.font_title['font_name'], self.font_title['font_size'])\n        self.title_height = self.title_label.content_height\n\n    def _build_items(self, layout_strategy):\n        self.font_item_selected['anchor_x'] = self.menu_halign\n        self.font_item_selected['anchor_y'] = 'center'\n\n        self.font_item['anchor_x'] = self.menu_halign\n        self.font_item['anchor_y'] = 'center'\n\n        layout_strategy(self)\n        self.selected_index = 0\n        self.children[self.selected_index][1].is_selected = True\n\n    def _select_item(self, new_idx):\n        if new_idx == self.selected_index:\n            return\n\n        if self.select_sound:\n            self.select_sound.play()\n\n        self.children[self.selected_index][1].is_selected = False\n        self.children[self.selected_index][1].on_unselected()\n\n        self.children[new_idx][1].is_selected = True\n        self.children[new_idx][1].on_selected()\n\n        self.selected_index = new_idx\n\n    def _activate_item(self):\n        if self.activate_sound:\n            self.activate_sound.play()\n        self.children[self.selected_index][1].on_activated()\n        self.children[self.selected_index][1].on_key_press(key.ENTER, 0)\n\n    def create_menu(self, items, selected_effect=None, unselected_effect=None,\n                    activated_effect=None, layout_strategy=verticalMenuLayout):\n        \"\"\"Creates the menu\n\n        The order of the list important since the\n        first one will be shown first.\n\n        Example::\n\n            l = []\n            l.append( MenuItem('Options', self.on_new_game ) )\n            l.append( MenuItem('Quit', self.on_quit ) )\n            self.create_menu( l, zoom_in(), zoom_out() )\n\n        :Parameters:\n            `items` : list\n                list of `BaseMenuItem` that will be part of the `Menu`\n            `selected_effect` : function\n                This action will be executed when the `BaseMenuItem` is selected\n            `unselected_effect` : function\n                This action will be executed when the `BaseMenuItem` is unselected\n            `activated_effect` : function\n                this action will executed when the `BaseMenuItem` is activated (pressing Enter or by clicking on it)\n        \"\"\"\n        z = 0\n        for i in items:\n            # calling super.add(). Z is important to mantain order\n            self.add(i, z=z)\n\n            i.activated_effect = activated_effect\n            i.selected_effect = selected_effect\n            i.unselected_effect = unselected_effect\n            i.item_halign = self.menu_halign\n            i.item_valign = self.menu_valign\n            z += 1\n\n        self._generate_title()  # If you generate the title after the items\n        # the V position of the items can't consider the title's height\n        if items:\n            self._build_items(layout_strategy)\n\n    def draw(self):\n        glPushMatrix()\n        self.transform()\n        self.title_label.draw()\n        glPopMatrix()\n\n    def on_text(self, text):\n        if text == '\\r':\n            return\n        return self.children[self.selected_index][1].on_text(text)\n\n    def on_key_press(self, symbol, modifiers):\n        if symbol == key.ESCAPE:\n            self.on_quit()\n            return True\n        elif symbol in (key.ENTER, key.NUM_ENTER):\n            self._activate_item()\n            return True\n        elif symbol in (key.DOWN, key.UP):\n            if symbol == key.DOWN:\n                new_idx = self.selected_index + 1\n            elif symbol == key.UP:\n                new_idx = self.selected_index - 1\n\n            if new_idx < 0:\n                new_idx = len(self.children) - 1\n            elif new_idx > len(self.children) - 1:\n                new_idx = 0\n            self._select_item(new_idx)\n            return True\n        else:\n            # send the menu item the rest of the keys\n            ret = self.children[self.selected_index][1].on_key_press(symbol, modifiers)\n\n            # play sound if key was handled\n            if ret and self.activate_sound:\n                self.activate_sound.play()\n            return ret\n\n    def on_mouse_release(self, x, y, buttons, modifiers):\n        (x, y) = director.get_virtual_coordinates(x, y)\n        if self.children[self.selected_index][1].is_inside_box(x, y):\n            self._activate_item()\n\n    def on_mouse_motion(self, x, y, dx, dy):\n        (x, y) = director.get_virtual_coordinates(x, y)\n        for idx, i in enumerate(self.children):\n            item = i[1]\n            if item.is_inside_box(x, y):\n                self._select_item(idx)\n                break\n\n\nclass BaseMenuItem(CocosNode):\n    \"\"\"An abstract menu item. It triggers a function when it is activated\"\"\"\n\n    selected_effect = None\n    unselected_effect = None\n    activated_effect = None\n\n    def __init__(self, callback_func, *args, **kwargs):\n        \"\"\"Creates a new menu item\n\n        :Parameters:\n\n\n\n            `callback_func` : function\n                The callback function\n        \"\"\"\n\n        super(BaseMenuItem, self).__init__()\n\n        self.callback_func = callback_func\n        self.callback_args = args\n        self.callback_kwargs = kwargs\n\n        self.is_selected = False\n\n        self.item_halign = None\n        self.item_valign = None\n\n        self.item = None\n        self.item_selected = None\n\n    def get_item_width(self):\n        \"\"\" Returns the width of the item.\n            This method should be implemented by descendents.\n\n            :rtype: int\n        \"\"\"\n        return self.item.width\n\n    def get_item_height(self):\n        \"\"\" Returns the width of the item.\n            This method should be implemented by descendents.\n\n            :rtype: int\n        \"\"\"\n        return self.item.height\n\n    def generateWidgets(self, pos_x, pos_y, font_item, font_item_selected):\n        \"\"\" Generate a normal and a selected widget.\n            This method should be implemented by descendents.\n        \"\"\"\n        raise NotImplementedError\n\n    def get_item_x(self):\n        \"\"\" Return the x position of the item.\n            This method should be implemented by descendents.\n\n            :rtype: int\n        \"\"\"\n        return self.item.x\n\n    def get_item_y(self):\n        \"\"\" Return the y position of the item.\n            This method should be implemented by descendents.\n\n            :rtype: int\n        \"\"\"\n        return self.item.y\n\n    def get_box(self):\n        \"\"\"Returns the box that contains the menu item.\n\n        :rtype: (x1,x2,y1,y2)\n        \"\"\"\n        width = self.get_item_width()\n        height = self.get_item_height()\n        if self.item_halign == CENTER:\n            x_diff = - width / 2\n        elif self.item_halign == RIGHT:\n            x_diff = - width\n        elif self.item_halign == LEFT:\n            x_diff = 0\n        else:\n            raise Exception(\"Invalid halign: %s\" % str(self.item_halign))\n\n        y_diff = - height / 2\n\n        x1 = self.get_item_x() + x_diff\n        y1 = self.get_item_y() + y_diff\n        # x1 += self.parent.x\n        # y1 += self.parent.y\n        # x2 = x1 + width\n        # y2 = y1 + height\n        # return x1, y1, x2, y2\n        return rect.Rect(x1, y1, width, height)\n\n    def draw(self):\n        raise NotImplementedError\n\n    def on_key_press(self, symbol, modifiers):\n        if symbol == key.ENTER and self.callback_func:\n            self.callback_func(*self.callback_args, **self.callback_kwargs)\n            return True\n\n    def on_text(self, text):\n        return True\n\n    def is_inside_box(self, x, y):\n        \"\"\"Returns whether the point (x,y) is inside the menu item.\n\n        :rtype: bool\n        \"\"\"\n#        (ax, ay, bx, by) = self.get_box()\n#        if( x >= ax and x <= bx and y >= ay and y <= by ):\n#            return True\n#        return False\n        rect = self.get_box()\n        p = self.point_to_local((x, y))\n        return rect.contains(p.x, p.y)\n\n    def on_selected(self):\n        if self.selected_effect:\n            self.stop()\n            self.do(self.selected_effect)\n\n    def on_unselected(self):\n        if self.unselected_effect:\n            self.stop()\n            self.do(self.unselected_effect)\n\n    def on_activated(self):\n        if self.activated_effect:\n            self.stop()\n            self.do(self.activated_effect)\n\n\nclass MenuIimage, callback_func, callback_functem (BaseMenuItem):\n    \"\"\"A menu item that shows a label. \"\"\"\n    def __init__(self, label, callback_func, *args, **kwargs):\n        \"\"\"Creates a new menu item\n\n        :Parameters:\n            `label` : string\n                The label the of the menu item\n            `callback_func` : function\n                The callback function\n        \"\"\"\n        self.label = label\n        super(MenuItem, self).__init__(callback_func, *args, **kwargs)\n\n    def get_item_width(self):\n        return self.item.content_width\n\n    def get_item_height(self):\n        return self.item.content_height\n\n    def generateWidgets(self, pos_x, pos_y, font_item, font_item_selected):\n        font_item['x'] = int(pos_x)\n        font_item['y'] = int(pos_y)\n        font_item['text'] = self.label\n        self.item = pyglet.text.Label(**font_item)\n        font_item_selected['x'] = int(pos_x)\n        font_item_selected['y'] = int(pos_y)\n        font_item_selected['text'] = self.label\n        self.item_selected = pyglet.text.Label(**font_item_selected)\n\n    def draw(self):\n        glPushMatrix()\n        self.transform()\n        if self.is_selected:\n            self.item_selected.draw()\n        else:\n            self.item.draw()\n        glPopMatrix()\n\n\nclass ImageMenuItem (BaseMenuItem):\n    \"\"\" A menu item that shows a selectable Image \"\"\"\n    def __init__(self, image, callback_func, *args, **kwargs):\n        if isinstance(image, string_types):\n            image = pyglet.resource.image(image)\n        self.image = image\n        super(ImageMenuItem, self).__init__(callback_func, *args, **kwargs)\n\n    def generateWidgets(self, pos_x, pos_y, font_item, font_item_selected):\n        anchors = {'left': 0, 'center': 0.5, 'right': 1, 'top': 1, 'bottom': 0}\n        anchor = (anchors[font_item['anchor_x']] * self.image.width,\n                  anchors[font_item['anchor_y']] * self.image.height)\n        self.item = Sprite(self.image, anchor=anchor, opacity=255,\n                           color=font_item['color'][:3])\n        self.item.scale = font_item['font_size'] / float(self.item.height)\n        self.item.position = int(pos_x), int(pos_y)\n        self.selected_item = Sprite(self.image, anchor=anchor,\n                                    color=font_item_selected['color'][:3])\n        self.selected_item.scale = (font_item_selected['font_size'] /\n                                    float(self.selected_item.height))\n        self.selected_item.position = int(pos_x), int(pos_y)\n\n    def draw(self):\n        glPushMatrix()\n        self.transform()\n        if self.is_selected:\n            self.selected_item.draw()\n        else:\n            self.item.draw()\n        glPopMatrix()\n\n\nclass MultipleMenuItem(MenuItem):\n    \"\"\"A menu item for switching between multiple values.\n\n    Example::\n\n        self.volumes = ['Mute','10','20','30','40','50','60','70','80','90','100']\n\n        items.append( MultipleMenuItem(\n                        'SFX volume: ',\n                        self.on_sfx_volume,\n                        self.volumes,\n                        8 ) )\n    \"\"\"\n\n    def __init__(self, label, callback_func, items, default_item=0):\n        \"\"\"Creates a Multiple Menu Item\n\n        :Parameters:\n            `label` : string\n                Item's label\n            `callback_func` : function\n                Callback function\n            `items` : list\n                List of strings containing the values\n            `default_item` : integer\n                Default item of the list. It is an index of the list. Default: 0\n        \"\"\"\n        self.my_label = label\n        self.items = items\n        self.idx = default_item\n        if self.idx < 0 or self.idx >= len(self.items):\n            raise Exception(\"Index out of bounds\")\n        super(MultipleMenuItem, self).__init__(self._get_label(), callback_func)\n\n    def _get_label(self):\n        return self.my_label+self.items[self.idx]\n\n    def on_key_press(self, symbol, modifiers):\n        if symbol == key.LEFT:\n            self.idx = max(0, self.idx-1)\n        elif symbol in (key.RIGHT, key.ENTER):\n            self.idx = min(len(self.items)-1, self.idx+1)\n\n        if symbol in (key.LEFT, key.RIGHT, key.ENTER):\n            self.item.text = self._get_label()\n            self.item_selected.text = self._get_label()\n            self.callback_func(self.idx)\n            return True\n\n\nclass ToggleMenuItem(MultipleMenuItem):\n    \"\"\"A menu item for a boolean toggle option.\n\n    Example::\n\n        items.append( ToggleMenuItem('Show FPS:', self.on_show_fps, director.show_FPS) )\n    \"\"\"\n\n    def __init__(self, label, callback_func, value=False):\n        \"\"\"Creates a Toggle Menu Item\n\n        :Parameters:\n            `label` : string\n                Item's label\n            `callback_func` : function\n                Callback function\n            `value` : bool\n                Default value of the item: False is 'OFF', True is 'ON'. Default:False\n        \"\"\"\n\n        super(ToggleMenuItem, self).__init__(label, callback_func, ['OFF', 'ON'],  int(value))\n\n    def on_key_press(self, symbol, mod):\n        if symbol in (key.LEFT, key.RIGHT, key.ENTER):\n            self.idx += 1\n            if self.idx > 1:\n                self.idx = 0\n            self.item.text = self._get_label()\n            self.item_selected.text = self._get_label()\n            self.callback_func(int(self.idx))\n            return True\n\n\nclass EntryMenuItem(MenuItem):\n    \"\"\"A menu item for entering a value.\n\n    When selected, ``self.value`` is toggled, the callback function is\n    called with ``self.value`` as argument.\"\"\"\n\n    value = property(lambda self: u''.join(self._value),\n                     lambda self, v: setattr(self, '_value', list(v)))\n\n    def __init__(self, label, callback_func, value, max_length=0):\n        \"\"\"Creates an Entry Menu Item\n\n        :Parameters:\n            `label` : string\n                Item's label\n            `callback_func` : function\n                Callback function taking one argument.\n            `value` : String\n                Default value: any string\n            `max_length` : integer\n                Maximum value length (Defaults to 0 for unbound length)\n        \"\"\"\n        self._value = list(value)\n        self._label = label\n        super(EntryMenuItem, self).__init__(\"%s %s\" % (label, value), callback_func)\n        self.max_length = max_length\n\n    def on_text(self, text):\n        if self.max_length == 0 or len(self._value) < self.max_length:\n            self._value.append(text)\n            self._calculate_value()\n        return True\n\n    def on_key_press(self, symbol, modifiers):\n        if symbol == key.BACKSPACE:\n            try:\n                self._value.pop()\n            except IndexError:\n                pass\n            self._calculate_value()\n            return True\n\n    def _calculate_value(self):\n        self.callback_func(self.value)\n        new_text = u\"%s %s\" % (self._label, self.value)\n        self.item.text = new_text\n        self.item_selected.text = new_text\n\n\nclass ColorMenuItem(MenuItem):\n    \"\"\"A menu item for selecting a color.\n\n    Example::\n\n        colors = [(255, 255, 255), (100, 200, 100), (200, 50, 50)]\n\n        items.append( ColorMenuItem(\n                        'Jacket:',\n                        self.on_jacket_color,\n                        colors ))\n    \"\"\"\n\n    def __init__(self, label, callback_func, items, default_item=0):\n        \"\"\"Creates a Color Menu Item\n\n        :Parameters:\n            `label` : string\n                Item's label\n            `callback_func` : function\n                Callback function\n            `items` : list\n                List of thre-element tuples describing the color choices\n            `default_item` : integer\n                Default item of the list. It is an index of the list. Default: 0\n        \"\"\"\n        self.my_label = label\n        self.items = items\n        self.idx = default_item\n        if self.idx < 0 or self.idx >= len(self.items):\n            raise Exception(\"Index out of bounds\")\n        super(ColorMenuItem, self).__init__(self._get_label(), callback_func)\n\n    def _get_label(self):\n        return self.my_label + \"        \"\n\n    def on_key_press(self, symbol, modifiers):\n        if symbol == key.LEFT:\n            self.idx = max(0, self.idx-1)\n        elif symbol in (key.RIGHT, key.ENTER):\n            self.idx = min(len(self.items)-1, self.idx+1)\n\n        if symbol in (key.LEFT, key.RIGHT, key.ENTER):\n            self.item.text = self._get_label()\n            self.item_selected.text = self._get_label()\n            self.callback_func(self.idx)\n            return True\n\n    def generateWidgets(self, pos_x, pos_y, font_item, font_item_selected):\n        font_item['x'] = int(pos_x)\n        font_item['y'] = int(pos_y)\n        font_item['text'] = self.my_label\n        self.item = pyglet.text.Label(**font_item)\n        self.item.labelWidth = self.item.content_width\n        self.item.text = self.label\n        font_item_selected['x'] = int(pos_x)\n        font_item_selected['y'] = int(pos_y)\n        font_item_selected['text'] = self.my_label\n        self.item_selected = pyglet.text.Label(**font_item_selected)\n        self.item_selected.labelWidth = self.item_selected.content_width\n        self.item_selected.text = self.label\n\n    def draw(self, *args, **kwargs):\n        super(ColorMenuItem, self).draw()\n        glPushMatrix()\n        self.transform()\n\n        if self.is_selected:\n            item = self.item_selected\n        else:\n            item = self.item\n\n        x1 = int(item._get_left() + item.labelWidth * 1.05)\n        y1 = int(item.y - item.content_height // 2)\n        y2 = int(item.y + item.content_height // 3)\n        x2 = int(x1 + (y2 - y1) * 2)\n        pyglet.graphics.draw(4, pyglet.graphics.GL_QUADS,\n                             ('v2f', (x1, y1, x1, y2, x2, y2, x2, y1)),\n                             ('c3B', self.items[self.idx] * 4))\n        glPopMatrix()\n\n\ndef shake():\n    \"\"\"Predefined action that performs a slight rotation and then goes back to the original rotation\n    position.\n    \"\"\"\n    angle = 5\n    duration = 0.05\n\n    rot = Accelerate(RotateBy(angle, duration), 2)\n    rot2 = Accelerate(RotateBy(-angle * 2, duration), 2)\n    return rot + (rot2 + Reverse(rot2)) * 2 + Reverse(rot)\n\n\ndef shake_back():\n    \"\"\"Predefined action that rotates to 0 degrees in 0.1 seconds\"\"\"\n    return RotateTo(0, 0.1)\n\n\ndef zoom_in():\n    \"\"\"Predefined action that scales to 1.5 factor in 0.2 seconds\"\"\"\n    return ScaleTo(1.5, duration=0.2)\n\n\ndef zoom_out():\n    \"\"\"Predefined action that scales to 1.0 factor in 0.2 seconds\"\"\"\n    return ScaleTo(1.0, duration=0.2)\n",
+			"file": "/usr/local/lib/python2.7/dist-packages/cocos/menu.py",
+			"file_size": 27030,
+			"file_write_time": 1440094638000000,
+			"settings":
+			{
+				"buffer_size": 26275,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"selected_items":
+		[
+			[
+				"in",
+				"Package Control: Install Package"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"ack",
+				"Package Control: Remove Package"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"remo",
+				"Package Control: Remove Package"
+			],
+			[
+				"pack",
+				"Package Control: Remove Package"
+			],
+			[
+				"list",
+				"Package Control: List Packages"
+			],
+			[
+				"pa",
+				"Package Control: List Packages"
+			],
+			[
+				"sublimelinter t",
+				"SublimeLinter: Toggle Linter"
+			],
+			[
+				"lint ",
+				"SublimeLinter: Choose Lint Mode"
+			],
+			[
+				"INSTA",
+				"Package Control: Install Package"
+			],
+			[
+				"rust",
+				"Rust Code Formatter: Set Path"
+			],
+			[
+				"rem",
+				"Package Control: Remove Package"
+			],
+			[
+				"Rust",
+				"Rust Code Formatter: Format Selection"
+			],
+			[
+				"",
+				"Package Control: Remove Package"
+			],
+			[
+				"pack in",
+				"Package Control: Install Package"
+			],
+			[
+				"set py",
+				"Set Syntax: Python"
+			]
+		],
+		"width": 449.0
+	},
+	"console":
+	{
+		"height": 146.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/home/kelossus/King-of-the-Dungeon/King of the Dungeon/King of the Dungeon/data.py",
+		"/home/kelossus/Downloads/cocos2d-0.6.3/test/test_menu_top_left.py",
+		"/home/kelossus/Downloads/cocos2d-0.6.3/test/test_transition_rotozoom.py",
+		"/home/kelossus/King-of-the-Dungeon/King of the Dungeon/King of the Dungeon/singletons.py",
+		"/home/kelossus/SuperEpicDefenderGame/data.py",
+		"/home/kelossus/SuperEpicDefenderGame/actions.py",
+		"/usr/local/lib/python2.7/dist-packages/cocos/scene.py",
+		"/usr/local/lib/python2.7/dist-packages/cocos/director.py",
+		"/usr/local/lib/python2.7/dist-packages/pyglet/gl/base.py",
+		"/home/kelossus/Downloads/cocos2d-0.6.3/test/test_spawn.py",
+		"/home/kelossus/Downloads/cocos2d-0.6.3/test/test_layersublayer.py",
+		"/home/kelossus/Downloads/cocos2d-0.6.3/test/test_interpreter_layer.py",
+		"/home/kelossus/Downloads/cocos2d-0.6.3/test/test_transition_slidein_l.py",
+		"/home/kelossus/Downloads/cocos2d-0.6.3/test/test_layer_rotate.py",
+		"/home/kelossus/Downloads/cocos2d-0.6.3/test/test_remove.py",
+		"/home/kelossus/Downloads/cocos2d-0.6.3/test/test_jump.py",
+		"/home/kelossus/Downloads/cocos2d-0.6.3/test/sample_skin.py",
+		"/home/kelossus/whatever.py",
+		"/home/kelossus/Documents/whatever.py",
+		"/home/kelossus/Documents/learn.C",
+		"/home/kelossus/.config/sublime-text-2/Packages/User/C++.sublime-settings",
+		"/home/kelossus/Documents/utilities/tests/tests.rs",
+		"/home/kelossus/Documents/utilities/src/util.rs",
+		"/home/kelossus/Documents/ts3_id.ini",
+		"/E/psyco-kitty/rust/utilities/tests/lib.rs",
+		"/E/psyco-kitty/rust/timed_input/timed_input.sublime-project",
+		"/E/psyco-kitty/rust/timed_input/Cargo.toml",
+		"/E/psyco-kitty/rust/timed_input/src/main.rs",
+		"/E/psyco-kitty/rust/Nueva carpeta/testa/src/main.rs",
+		"/E/psyco-kitty/rust/timed_input/src/s.sublime-project",
+		"/C/Users/Equipo/AppData/Roaming/Sublime Text 3/Packages/User/SublimeLinter.sublime-settings",
+		"/E/documents/alarm_project/timed_input.py",
+		"/C/Users/Equipo/AppData/Roaming/Sublime Text 3/Packages/User/RustAutoComplete.sublime-settings",
+		"/E/rust conf/racer/README.md",
+		"/E/Downloads/rustup.sh",
+		"/E/rust-style/Cargo.toml",
+		"/E/racer/Cargo.toml",
+		"/E/documents/alarm_project/timed_input/src/main.rs",
+		"/E/documents/alarm_project/timed_input/Cargo.toml",
+		"/E/psyco-kitty/rust/dining_philosophers/src/main.rs",
+		"/E/psyco-kitty/rust/multiples_of_3_and_5/src/main.rs",
+		"/E/documents/alarm_project/test - copia.py",
+		"/E/documents/alarm_project/test.py",
+		"/E/documents/alarm_project/server_side.py",
+		"/E/racer/README.md",
+		"/C/Users/Equipo/AppData/Roaming/Sublime Text 3/Packages/User/Rust.sublime-settings",
+		"/E/psyco-kitty/rust/guessing_game/Cargo.toml",
+		"/E/psyco-kitty/rust/guessing_game/src/main.rs",
+		"/C/Users/Equipo/OneDrive/Documentos/Nuevo AutoHotkey Script.ahk",
+		"/E/psyco-kitty/b-scripting.py",
+		"/E/Downloads/DB_Queries_Transactions.java",
+		"/C/Users/Equipo/OneDrive/Documentos/learning.java",
+		"/E/Downloads/acaf_connected.c",
+		"/E/RRRRHHHH_Artifacts/Artifacts.mdj"
+	],
+	"find":
+	{
+		"height": 34.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"minions",
+			"houses",
+			"selected_necromancer",
+			"necromancer",
+			"house_necromancer",
+			"HouseImage",
+			"None",
+			"ImageMenuItem",
+			"basemenuitem",
+			"layout_strategy",
+			"layout",
+			"_build_items",
+			"_build",
+			"1",
+			"i.",
+			"selected_effect",
+			"i.selected_effect",
+			"i.",
+			"i",
+			"create_menu",
+			"menui",
+			"LEFT",
+			"MIDDLE",
+			"from cocos.director import director\n",
+			"from cocos.director import *\n",
+			"from pyglet import font\n",
+			"from pyglet import image\n",
+			"from pyglet.gl import *\n",
+			"from cocos.sprite import *\n",
+			"from cocos.scenes import *\n",
+			"from cocos.actions import *\n",
+			"from cocos.layer import *",
+			"scene1",
+			"TestLayer",
+			"name",
+			"hero",
+			"thread",
+			";\n",
+			");\n",
+			">",
+			">>",
+			">>>>>",
+			">>>>>>> 448fde3bc0eca9c2c915d0b5fab1a39044f27db4:It2Artifacts(E)/Artifacts.mdj\n"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "data.py",
+					"settings":
+					{
+						"buffer_size": 1303,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/home/kelossus/whatever.py",
+					"settings":
+					{
+						"buffer_size": 1546,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1350,
+								1350
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 228.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "king_of_the_dungeon.py",
+					"settings":
+					{
+						"buffer_size": 5944,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3441,
+								3441
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1596.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/usr/local/lib/python3.4/dist-packages/cocos/actions/move_actions.py",
+					"settings":
+					{
+						"buffer_size": 7465,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2883,
+								2883
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1368.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "/home/kelossus/Downloads/cocos2d-0.6.3/test/test_moveto.py",
+					"settings":
+					{
+						"buffer_size": 863,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								683,
+								683
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 114.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "singletons.py",
+					"settings":
+					{
+						"buffer_size": 3562,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "/home/kelossus/Downloads/cocos2d-0.6.3/test/test_scene_add_scaled.py",
+					"settings":
+					{
+						"buffer_size": 1206,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								343,
+								343
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 228.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "/home/kelossus/Downloads/cocos2d-0.6.3/test/test_menu_items.py",
+					"settings":
+					{
+						"buffer_size": 2236,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1986,
+								1986
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 228.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "module1.py",
+					"settings":
+					{
+						"buffer_size": 0,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "/usr/local/lib/python2.7/dist-packages/cocos/menu.py",
+					"settings":
+					{
+						"buffer_size": 26275,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								12604,
+								12604
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2100.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 26.0
+	},
+	"input":
+	{
+		"height": 34.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"replace":
+	{
+		"height": 48.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"",
+				"E:\\psyco-kitty\\rust\\timed_input\\src\\main.rs"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 150.0,
+	"status_bar_visible": true
+}

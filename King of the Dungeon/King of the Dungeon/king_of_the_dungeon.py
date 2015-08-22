@@ -11,7 +11,7 @@ from pyglet.image import load_animation
 
 from data import *
 
-from singletons import Gold, Logic
+from logic import Gold, Logic
 
 class HUDLayer(Layer):
     def __init__(self):
@@ -51,51 +51,51 @@ class GUILayer(Menu):
         
         ############   goblin house    ###################
         house_goblin = ImageMenuItem("resources/goblin_quarters.png",
-                                     self.logic.spawn('goblin'))
+                                     self.logic.spawn, "goblin")
         houses.append(house_goblin)
-        positions.append((100,60))
+        positions.append(spawn_place.get("goblin"))
 
         ############  hobgoblin house  ###################
 
         house_hobgoblin = ImageMenuItem("resources/hobgoblin_quarters.png",
-                                        self.logic.spawn('hobgoblin'))
+                                        self.logic.spawn, "hobgoblin")
         houses.append(house_hobgoblin)
-        positions.append((200,60))
+        positions.append(spawn_place.get("hobgoblin"))
 
         ############     orc  house    ###################
 
         house_orc = ImageMenuItem("resources/orc_quarters.png",
-                                  self.logic.spawn('orc'))
+                                  self.logic.spawn, "orc")
         houses.append(house_orc)
-        positions.append((300,60))
+        positions.append(spawn_place.get("orc"))
 
         ############  madgnome house   ##################
 
         house_madgnome = ImageMenuItem("resources/madgnome_quarters.png",
-                                       self.logic.spawn('madgnome'))
+                                       self.logic.spawn, "madgnome")
         houses.append(house_madgnome)
-        positions.append((400,60))
+        positions.append(spawn_place.get("madgnome"))
 
         ############ necromancer house ###################
 
         house_necromancer = ImageMenuItem("resources/necromancer_quarters.png",
-                                          self.logic.spawn('necromancer'))
+                                          self.logic.spawn, "necromancer")
         houses.append(house_necromancer)
-        positions.append((500,60))
+        positions.append(spawn_place.get("necromancer"))
 
         ############  gatherer  house  ###################
 
         house_gatherer = ImageMenuItem("resources/gatherer_quarters.png",
-                                       self.logic.spawn('gatherer'))
+                                       self.logic.spawn, "gatherer")
         houses.append(house_gatherer)
-        positions.append((600, 60))
+        positions.append(spawn_place.get("gatherer"))
 
         ############   miner   house   ###################
 
         house_miner = ImageMenuItem ("resources/miner_quarters.png",
-                                     self.logic.spawn('miner'))
+                                     self.logic.spawn, "miner")
         houses.append(house_miner)
-        positions.append((700,60))
+        positions.append(spawn_place.get("miner"))
 
         ############    create menu    ###################
 
@@ -119,23 +119,37 @@ class GUILayer(Menu):
 class DynamicLayer(Layer):
     def __init__(self):
         super().__init__()
-        GUILayer.push_handlers(self)
+
 
     def invoke(self, minion):
-        pass
+        mini = Sprite("resources/"+minion+".gif", position = spawn_place[minion])
+        self.add(mini)
+        print("ok")
+        if minion == "miner":    
+            mini.do(MoveBy((200,0), minion_move_time) + CallFunc(mini.kill))
+        else:
+            mini.do(MoveBy((0,-200), minion_move_time) + CallFunc(mini.kill))
+        print("amaihere")
+
+
+
 
     def bring(self, minion):
         pass
 
 class StaticLayer(Layer):
-    def __init__(self):
+    def __init__(self, logic):
         super().__init__()
 
-        # self.monster = Sprite("resource/monster.gif", position = monster_pos)
-        self.monster = Sprite(load_animation("resources/monster.gif"), position = monster_pos)
+        self.monster = Sprite("resources/monster.gif", position = monster_pos)
+       # self.monster = Sprite(load_animation("resources/monster.gif"), position = monster_pos)
         self.gold = Gold(self)
 
+        logic.push_handlers(self.gold)
+
         self.add(self.monster)
+
+
 
 class GroundLayer(Layer):
     def __init__(self):
@@ -164,11 +178,14 @@ class RootLayer(Layer):
         hud_layer = HUDLayer()
         self.logic = Logic(dynamic_layer, hud_layer)
 
+        self.do(Repeat(CallFunc(self.logic.update) + Delay(1)))
+
         self.add(GroundLayer(),        z=0)
-        self.add(StaticLayer(),        z=1)
-        self.add(DynamicLayer(),       z=2)
+        self.add(StaticLayer(self.logic),        z=1)
+        self.add(dynamic_layer,       z=2)
         self.add(GUILayer(self.logic), z=3)
-        self.add(HUDLayer(),           z=4)
+        self.add(hud_layer,           z=4)
+
 
 
 def main():

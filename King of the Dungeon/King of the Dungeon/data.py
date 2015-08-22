@@ -10,7 +10,9 @@ window = {
 window_original = (1920, 1080)
 
 # misc
-
+start_gold = 9999999999
+start_corpses = 999999
+start_weapons = 4
 gold_objective = 10000
 
 # static positioning
@@ -22,7 +24,7 @@ gold_pos = ((100, 100), (300, 300))
 soldiers = { # ((attack, defense), corpse cost, weapon cost)
 	"goblin": 			((1, 1), 1, 0),
 	"hobgoblin": 		((2, 2), 1, 1),
-	"orc": 				((3, 3), 1, 2), # wait 1 turn to fight (enter stack)
+	"orc": 				((2, 4), 2, 2), # they have a 50% chance to attack twice, if they kill in the first attack they take no damage
 	"madgnome": 		((2,1), 1, 2), # spawn madgnome_count when bought
 	"necromancer": 		((0,1), 0, 0) # costs gold
 }
@@ -32,6 +34,19 @@ farmers = { # (cost, success rate, gathred gold, gathered corpses, gathered weap
 	"gatherer": 		(1, 0.08, 1, 5, 1)
 }
 
+spawn_place = {
+	"goblin": 			(400, 200),
+	"hobgoblin": 		(500, 180),
+	"orc": 				(600, 190), 
+	"madgnome": 		(700, 200),
+	"necromancer": 		(800, 240),
+	"gatherer":			(900, 260),
+	"miner":			(900, 400)
+}
+
+minion_move_time = 3
+
+orc_berserk_chance = 0.5
 
 madgnome_count = 3
 
