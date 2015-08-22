@@ -11,6 +11,8 @@ from pyglet.image import load_animation
 
 from data import *
 
+from singletons import gold, logic
+
 class HUDLayer(Layer):
     def __init__(self):
         super().__init__()
@@ -220,9 +222,13 @@ class DynamicLayer(Layer):
 class StaticLayer(Layer):
     def __init__(self):
         super().__init__()
+
         self.monster =  Label("fuck you monstwr", x=700, y=500 )
         # self.monster = Sprite(load_animation("resources/monster.gif"),
         #        position = monster_pos)
+
+        gold.init(self)
+
 
         self.add(self.monster)
 

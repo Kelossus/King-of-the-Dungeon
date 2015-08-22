@@ -9,8 +9,12 @@ window = {
 
 window_original = (1920, 1080)
 
+# misc
+
+gold_objective = 10000
+
 # static positioning
-monster_pos = (500, 500)
+monster_pos = (650, 750)
 gold_pos = ((100, 100), (300, 300))
 
 # minions
