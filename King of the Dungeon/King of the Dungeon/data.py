@@ -15,6 +15,9 @@ start_corpses = 999999
 start_weapons = 4
 gold_objective = 10000
 
+house_scale= 6
+minion_scale=3
+
 # static positioning
 monster_pos = (650, 750)
 gold_pos = ((100, 100), (300, 300))

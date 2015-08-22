@@ -65,15 +65,13 @@ class Logic(EventDispatcher):
                 self.gold = gold
                 self.dispatch_event('on_gold_gain', self.gold)
 
-                if minion == 'orc':
-                    self.orcs += 1
-                else:
+                
+                self.soldiers.put(data.soldiers[minion][0])
+                if minion == 'madgnome':
                     self.soldiers.put(data.soldiers[minion][0])
-                    if minion == 'madgnome':
-                        self.soldiers.put(data.soldiers[minion][0])
-                        self.soldiers.put(data.soldiers[minion][0])
-                    print("supersoldier")
-                    self.dynamic_layer.invoke(minion)
+                    self.soldiers.put(data.soldiers[minion][0])
+                print("supersoldier")
+                self.dynamic_layer.invoke(minion)
                 return True
         else:
             corpses = self.corpses - data.farmers[minion][1]

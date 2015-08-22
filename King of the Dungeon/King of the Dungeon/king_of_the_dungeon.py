@@ -52,6 +52,7 @@ class GUILayer(Menu):
         ############   goblin house    ###################
         house_goblin = ImageMenuItem("resources/goblin_quarters.png",
                                      self.logic.spawn, "goblin")
+        house_goblin.scale = house_scale
         houses.append(house_goblin)
         positions.append(spawn_place.get("goblin"))
 
@@ -59,6 +60,7 @@ class GUILayer(Menu):
 
         house_hobgoblin = ImageMenuItem("resources/hobgoblin_quarters.png",
                                         self.logic.spawn, "hobgoblin")
+        house_hobgoblin.scale = house_scale
         houses.append(house_hobgoblin)
         positions.append(spawn_place.get("hobgoblin"))
 
@@ -66,6 +68,7 @@ class GUILayer(Menu):
 
         house_orc = ImageMenuItem("resources/orc_quarters.png",
                                   self.logic.spawn, "orc")
+        house_orc.scale = house_scale
         houses.append(house_orc)
         positions.append(spawn_place.get("orc"))
 
@@ -73,6 +76,7 @@ class GUILayer(Menu):
 
         house_madgnome = ImageMenuItem("resources/madgnome_quarters.png",
                                        self.logic.spawn, "madgnome")
+        house_madgnome.scale = house_scale
         houses.append(house_madgnome)
         positions.append(spawn_place.get("madgnome"))
 
@@ -80,6 +84,7 @@ class GUILayer(Menu):
 
         house_necromancer = ImageMenuItem("resources/necromancer_quarters.png",
                                           self.logic.spawn, "necromancer")
+        house_necromancer.scale = house_scale
         houses.append(house_necromancer)
         positions.append(spawn_place.get("necromancer"))
 
@@ -87,6 +92,7 @@ class GUILayer(Menu):
 
         house_gatherer = ImageMenuItem("resources/gatherer_quarters.png",
                                        self.logic.spawn, "gatherer")
+        house_gatherer.scale = house_scale
         houses.append(house_gatherer)
         positions.append(spawn_place.get("gatherer"))
 
@@ -94,6 +100,7 @@ class GUILayer(Menu):
 
         house_miner = ImageMenuItem ("resources/miner_quarters.png",
                                      self.logic.spawn, "miner")
+        house_miner.scale = house_scale
         houses.append(house_miner)
         positions.append(spawn_place.get("miner"))
 
