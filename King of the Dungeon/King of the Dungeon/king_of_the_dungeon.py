@@ -111,6 +111,12 @@ class GUILayer(Menu):
         houses.append(house_miner)
         positions.append(spawn_place.get("miner"))
 
+        ############ the fucking start ###################
+
+        start_butt = MenuItem ("START WAVE", self.start_stage)
+        houses.append(start_butt)
+        positions.append((1100, 850))
+
         ############    create menu    ###################
 
         self.create_menu(houses,
@@ -130,6 +136,12 @@ class GUILayer(Menu):
         rot2 = Accelerate(RotateBy(-angle * 2, duration), 2)
         return rot + (rot2 + Reverse(rot2)) * 2 + Reverse(rot)
 
+    def start_stage(self):
+        self.logic.stage = True
+        self.logic.load_next_wave()
+
+
+
 class DynamicLayer(Layer):
     def __init__(self):
         super().__init__()
@@ -138,7 +150,7 @@ class DynamicLayer(Layer):
 
 
     def invoke(self, minion):
-        mini = Sprite(load_animation("resources/"+minion+".gif"), position = spawn_place[minion])
+        mini = Sprite("resources/"+minion+".gif", position = spawn_place[minion])
         mini.scale = minion_scale
         self.add(mini) 
 
@@ -148,27 +160,27 @@ class DynamicLayer(Layer):
     def bring(self, minion):
         if minion == "gatherer":
             if self.gathval:
-                mini = Sprite(load_animation("resources/gatherer_coming.gif"), position =(1200, -13))
+                mini = Sprite("resources/gatherer_coming.gif", position =(1200, -13))
                 mini.scale = minion_scale
                 self.add(mini)               
                 mini.do(MoveBy((0, 273), minion_move_time) + CallFunc(mini.kill))
                 self.gathval = False
             else:
-                mini1 = Sprite(load_animation("resources/gatherer.gif"), position = spawn_place[minion])
+                mini1 = Sprite("resources/gatherer.gif", position = spawn_place[minion])
                 mini1.scale = minion_scale
                 self.add(mini1)               
                 mini1.do(MoveBy(minion_move_to[minion], minion_move_time) + CallFunc(mini1.kill))
                 self.gathval = True
         elif minion == "miner":
             if self.minval:
-                mini = Sprite(load_animation("resources/miner.gif"), position =(1270, 420))
+                mini = Sprite("resources/miner.gif", position =(1270, 420))
                 mini.scale = minion_scale
                 mini.scale_x = -minion_scale
                 self.add(mini)               
                 mini.do(MoveBy( (-270, 0), minion_move_time) + CallFunc(mini.kill) )
                 self.minval = False
             else:
-                mini1 = Sprite(load_animation("resources/miner.gif"), position = spawn_place[minion])
+                mini1 = Sprite("resources/miner.gif", position = spawn_place[minion])
                 mini1.scale = minion_scale
                 self.add(mini1)               
                 mini1.do(MoveBy(minion_move_to[minion], minion_move_time) + CallFunc(mini1.kill))
@@ -179,7 +191,7 @@ class StaticLayer(Layer):
     def __init__(self, logic):
         super().__init__()
 
-        self.monster = Sprite(load_animation("resources/monster.gif"), position = monster_pos)
+        self.monster = Sprite("resources/monster.gif", position = monster_pos)
        # self.monster = Sprite(load_animation("resources/monster.gif"), position = monster_pos)
         self.gold = Gold(self)
 

@@ -84,5 +84,6 @@ hunters = ( # (attack, defense)
 )
 
 waves = ( # (vagabound, militia, looter, defender, agressor, champion)
-	(5, 1, 0, 0, 0)
+	(5, 1, 0, 0, 0),
+	(6, 3, 2, 0, 0)
 )

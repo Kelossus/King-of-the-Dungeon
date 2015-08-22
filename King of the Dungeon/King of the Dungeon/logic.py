@@ -1,11 +1,13 @@
 ﻿from time import clock
 from random import random
+from random import shuffle
 from queue import Queue
 
 from cocos.sprite import Sprite
 
 from pyglet.image import load
 from pyglet.event import EventDispatcher
+from pyglet.app import exit
 
 import data
 from data import gold_pos, gold_scale, gold_objective, necromancer_gold_cost
@@ -40,6 +42,7 @@ class Logic(EventDispatcher):
         self.corpses = data.start_corpses
         self.weapons = data.start_weapons
         self.gold = data.start_gold
+        self.stage = False
 
         self.farmers = {
             'miner': 0,
@@ -55,14 +58,14 @@ class Logic(EventDispatcher):
             "necromancer": 0
         }
 
-        self.soldiers = Queue()
-        self.necromancers = 0
-        self.hunters = Queue()
+        self.soldiers = list()
+        self.hunters = list()
 
         self.dynamic_layer = dynamic_layer
         self.hud_layer = hud_layer
 
-        self.current_wave = 0
+        self.current_wave = -1
+        
 
     def spawn(self, minion):
         if minion in data.soldiers:
@@ -79,11 +82,11 @@ class Logic(EventDispatcher):
                 self.dispatch_event('on_gold_gain', self.gold)
 
                 
-                self.soldiers.put((minion, data.soldiers[minion][0]))
+                self.soldiers.append((minion, data.soldiers[minion][0]))
 
                 if minion == 'madgnome':
-                    self.soldiers.put((minion, data.soldiers[minion][0]))
-                    self.soldiers.put((minion, data.soldiers[minion][0]))
+                    self.soldiers.append((minion, data.soldiers[minion][0]))
+                    self.soldiers.append((minion, data.soldiers[minion][0]))
                 self.dynamic_layer.invoke(minion)
                 self.soldier_each[minion] +=1
                 self.hud_layer.update(self.corpses, self.weapons, self.gold,
@@ -108,9 +111,15 @@ class Logic(EventDispatcher):
 
     def load_next_wave(self):
         self.current_wave += 1
-        for i in range(data.waves):
-            for j in range(data.waves[i]):
-                self.hunters.put(data.hunters[i])
+        print(self.current_wave, "   ", len(data.waves))
+        if (self.current_wave >= len(data.waves)):
+            print("you win")
+            self.stage = False
+            return 
+
+        for i in range(5):
+            for j in range(data.waves[self.current_wave][i]):
+                self.hunters.append(list(data.hunters[i]))
 
     def update(self):
         self.hud_layer.update(self.corpses, self.weapons, self.gold,
@@ -118,9 +127,16 @@ class Logic(EventDispatcher):
                  self.soldier_each["hobgoblin"], self.soldier_each["orc"], self.soldier_each["madgnome"],
                  self.soldier_each["necromancer"] )
 
-        # self.fight()
+        if self.stage :
+            if len(self.hunters) == 0:
+                stage = False
+                
+            elif len(self.soldiers) == 0:
+                self.gold -= len(self.soldiers)
+            else:
+                self.fight()
 
-        self.farm()
+                self.farm()
 
     def farm(self):
         for key in data.farmers:
@@ -134,25 +150,25 @@ class Logic(EventDispatcher):
 
                 self.dynamic_layer.bring(key)
 
-    # def fight(self):
-    #     soldier = self.soldiers.get()
-    #     hunter = self.hunters.get()
+    def fight(self):
+       
+        soldier = self.soldiers.pop(0)
+        hunter = self.hunters.pop(0)
+        if soldier[0] == 'orc' and not data.orc_berserk_chance < random():
+            hunter[1] -= soldier[1][0]
+            if not hunter[1] > 0:
+                self.soldiers.append(soldier)
+                return
+        if not (self.soldier_each["necromancer"] * data.necromancer_revival_chance < random()):
+            soldier[1][1] -= hunter[0]
 
-    #     if soldier[0] == 'orc' and not data.orc_berserk_chance < random():
-    #         hunter[1][1] -= soldier[1][0]
-    #         if not hunter[1][1] > 0:
-    #             self.soldiers.put(soldier)
-    #             return
+        hunter[1] -= soldier[1][0]
 
-    #     hunter[1][1] -= soldier[1][0]
-    #     soldier[1][1] -= hunter[1][0]
 
-    #     revived = not self.soldier_each["necromancers"] * data.necromancer_revival_chance < random
-
-    #     if soldier[1][1] > 0 or revived:
-    #         self.soldiers.put(soldier)
-    #     if hunter[1][1] > 0:
-    #         self.hunters.put(hunter)
+        if soldier[1][1] > 0 :
+            self.soldiers.append(soldier)
+        if hunter[1] > 0:
+            self.hunters.append(hunter)
 
 
 
