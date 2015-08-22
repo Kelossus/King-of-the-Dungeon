@@ -12,7 +12,22 @@ class HUDLayer(Layer):
         super(HUDLayer, self).__init__()
 
         self.text = cocos.text.Label("aaaa", x=100, y=280 )
+        self.count_goblin = cocos.text.Label("0", x=200, y=300)
+        self.count_hobgoblin = cocos.text.Label("0", x=250, y=300)
+        self.count_orc = cocos.text.Label("0", x=300, y=300)
+        self.count_madgnome = cocos.text.Label("0", x=350, y=300)
+        self.count_necro = cocos.text.Label("0", x=400, y=300)
+        self.count_miner = cocos.text.Label("0", x=450, y=300)
+        self.count_gatherer = cocos.text.Label("0", x=500, y=300)
+
         self.add(self.text)
+        self.add(self.count_goblin)
+        self.add(self.count_hobgoblin)
+        self.add(self.count_orc)
+        self.add(self.count_madgnome)
+        self.add(self.count_necro)
+        self.add(self.count_miner)
+        self.add(self.count_gatherer)
 
 
 class GUILayer(Layer):
@@ -25,33 +40,43 @@ class GUILayer(Layer):
         
 
         ############   goblin house    ###################
-        house_goblin = ImageMenuItem("resources/goblin_quarters.png", None)
+        house_goblin = ImageMenuItem("resources/goblin_quarters.png", spawn_goblin())
         houses.append(house_goblin)
         positions.append((100,60))
 
         ############  hobgoblin house  ###################
 
-        house_hobgoblin = ImageMenuItem("resources/hobgoblin_quarters.png", None)
+        house_hobgoblin = ImageMenuItem("resources/hobgoblin_quarters.png", spawn_hobgoblin)
         houses.append(house_hobgoblin)
         positions.append((200,60))
 
         ############     orc  house    ###################
 
-        house_orc = ImageMenuItem("resources/orc_quarters.png", None)
+        house_orc = ImageMenuItem("resources/orc_quarters.png", spawn_orc)
         houses.append(house_orc)
         positions.append((300,60))
 
         ############  madgnome house   ##################
 
-        house_madgnome = ImageMenuItem("resources/madgnome_quarters.png", None)
+        house_madgnome = ImageMenuItem("resources/madgnome_quarters.png", spawn_madgnome)
         houses.append(house_madgnome)
         positions.append((400,60))
 
         ############ necromancer house ###################
 
-        house_necromancer = ImageMenuItem("resources/necromancer_quarters.png", None)
+        house_necromancer = ImageMenuItem("resources/necromancer_quarters.png", spawn_necromancer)
         houses.append(house_necromancer)
         positions.append((500,60))
+
+        ############  gatherer  house  ###################
+
+        house_gatherer = ImageMenuItem("resources/gatherer_quarters.png", spawn_gatherer())
+        houses.append(house_gatherer)
+        positions.append((600, 60))
+
+        ############   miner   house   ###################
+
+        house_miner = ImageMenuItem ("resources/miner_quarters.png", spawn_miner())
 
         ############    create menu    ###################
 
@@ -68,6 +93,8 @@ class GUILayer(Layer):
         house_orc.selected_effect = selected_orc()
         house_madgnome.selected_effect = selected_madgnome()
         house_necromancer.selected_effect = selected_necromancer()
+        house_gatherer.selected_effect = selected_gatherer()
+        house_miner.selected_effect = selected_miner()
 
     def shake(self):
         """Predefined action that performs a slight rotation and then goes back to the original rotation
@@ -94,6 +121,35 @@ class GUILayer(Layer):
 
     def selected_necromancer(self):
         self.HUD_ref.text.element.text = "corpse and shit \n\n backstab"
+
+    def selected_gatherer(self):
+        self.HUD_ref.text.element.text = "looter \n\n backstab"
+
+    def selected_miner(self):
+        self.HUD_ref.text.element.text = "pickaxe \n poor worker"
+
+    # Spawnning
+
+    def spawn_goblin(self):
+        pass
+
+    def spawn_hobgoblin(self):
+        pass
+
+    def spawn_orc(self):
+        pass
+
+    def spawn_madgnome(self):
+        pass
+
+    def spawn_necromancer(self):
+        pass
+
+    def spawn_gatherer(self):
+        pass
+
+    def spawn_miner(self):
+        pass
 
 class DynamicLayer(Layer):
     pass
