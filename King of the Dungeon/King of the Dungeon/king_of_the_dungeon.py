@@ -148,10 +148,12 @@ class DynamicLayer(Layer):
     def bring(self, minion):
         if minion == "gatherer":
             if self.gathval:
-                mini = Sprite(load_animation("resources/gatherer_coming.gif"), position =(1200, -13))
+                mini = Sprite(load_animation("resources/gatherer_coming.gif"),
+                              position = (spawn_place['gatherer'][0] + minion_move_to['gatherer'][0],
+                                          spawn_place['gatherer'][1] + minion_move_to['gatherer'][1]))
                 mini.scale = minion_scale
                 self.add(mini)               
-                mini.do(MoveBy((0, 273), minion_move_time) + CallFunc(mini.kill))
+                mini.do(MoveTo(spawn_place['gatherer'], minion_move_time) + CallFunc(mini.kill))
                 self.gathval = False
             else:
                 mini1 = Sprite(load_animation("resources/gatherer.gif"), position = spawn_place[minion])
