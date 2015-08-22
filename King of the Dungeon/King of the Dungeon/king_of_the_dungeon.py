@@ -48,7 +48,6 @@ class HUDLayer(Layer):
         self.count_gold.element.text = str(gold)
 
 
-
 class GUILayer(Menu):
     def __init__(self, logic):
         super().__init__()

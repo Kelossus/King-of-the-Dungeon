@@ -53,7 +53,6 @@ class Logic(EventDispatcher):
             "necromancer": 0
         }
 
-
         self.soldiers = Queue()
         self.necromancers = 0
         self.hunters = Queue()
@@ -80,9 +79,9 @@ class Logic(EventDispatcher):
                 
                 self.soldiers.put((minion, data.soldiers[minion][0]))
 
-                self.soldiers.put((minion, data.soldiers[minion][0]))
-                self.soldiers.put((minion, data.soldiers[minion][0]))
-
+                if minion == 'madgnome':
+                    self.soldiers.put((minion, data.soldiers[minion][0]))
+                    self.soldiers.put((minion, data.soldiers[minion][0]))
                 self.dynamic_layer.invoke(minion)
                 self.soldier_each[minion] +=1
                 self.hud_layer.update(self.corpses, self.weapons, self.gold,
@@ -118,11 +117,12 @@ class Logic(EventDispatcher):
                  self.soldier_each["necromancer"] )
 
         # self.fight()
+
         self.farm()
 
     def farm(self):
         for key in data.farmers:
-            success_rate = data.farmers[key][1]
+            success_rate = data.farmers[key][0]
             if not success_rate * self.farmers[key] < random():
                 self.corpses += data.farmers[key][2]
                 self.weapons += data.farmers[key][3]
@@ -151,6 +151,7 @@ class Logic(EventDispatcher):
     #         self.soldiers.put(soldier)
     #     if hunter[1][1] > 0:
     #         self.hunters.put(hunter)
+
 
 
 Logic.register_event_type("on_gold_gain")
