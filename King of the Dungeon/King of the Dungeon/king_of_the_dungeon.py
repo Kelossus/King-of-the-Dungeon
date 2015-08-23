@@ -285,8 +285,6 @@ class RootLayer(Layer):
         hud_layer = HUDLayer()
         self.logic = Logic(dynamic_layer, hud_layer)
 
-        self.do(Repeat(CallFunc(self.logic.update) + Delay(update_delay)))
-
         wave_report = WaveReportLayer(self.logic)
         wave_report.do(Hide())
 

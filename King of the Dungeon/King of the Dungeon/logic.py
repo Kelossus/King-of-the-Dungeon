@@ -50,7 +50,6 @@ class Logic(CocosNode, EventDispatcher):
             'gatherer': 0
         }
 
-
         self.soldier_each = {
             "goblin": 0,
             "hobgoblin": 0,
@@ -66,7 +65,8 @@ class Logic(CocosNode, EventDispatcher):
         self.hud_layer = hud_layer
 
         self.current_wave = -1
-        
+
+        self.do(Repeat(CallFunc(self.logic.update) + Delay(update_delay)))        
 
     def spawn(self, minion):
         if minion in data.soldiers:
