@@ -16,51 +16,95 @@ from logic import Gold, Logic
 def load_animation(path, *args, **kargs):
     return path
 
-class WaveReportLayer(Menu):
-    def __init__(self, logic):
-        super().init()
+class HuntersLayer(Layer):
 
-        this.logic = logic
+    is_event_handler = True   
 
-        self.create_menu([MenuItem("START WAVE", self.start_stage)],
+    def __init__(self):
+        super().__init__()
+        ws = director.get_window_size()
+
+        self.background_sprite = Sprite("resources/HuntersMenu.png")
+        self.background_sprite.position = (ws[0]/2, ws[1]/2)
+        self.add(self.background_sprite, z=0)
+
+    def on_mouse_press (self, x, y, buttons, modifiers):
+        self.posx, self.posy = director.get_virtual_coordinates (x, y)
+        if self.posx <  250  and self.posy > 930: 
+            director.pop()
+
+class SoldiersLayer(Layer):
+
+    is_event_handler = True   
+
+    def __init__(self):
+        super().__init__()
+        ws = director.get_window_size()
+
+        self.background_sprite = Sprite("resources/SoldiersMenu.png")
+        self.background_sprite.position = (ws[0]/2, ws[1]/2)
+        self.add(self.background_sprite, z=0)
+
+    def on_mouse_press (self, x, y, buttons, modifiers):
+        self.posx, self.posy = director.get_virtual_coordinates (x, y)
+        if self.posx <  250  and self.posy > 930: 
+            director.pop()
+
+class WaveReportMenu(Menu):
+        def __init__(self, logic):
+           super().__init__()
+
+           self.logic = logic
+
+           self.create_menu([MenuItem("START WAVE", self.start_stage)],
                          activated_effect=None,
-                         selected_effect=None,
-                         unselected_effect=None,
-                         layout_strategy=fixedPositionMenuLayout([(1100, 850)]))
+                         selected_effect=ScaleBy(2, duration = 0.5),
+                         unselected_effect=Reverse(ScaleBy(2, duration = 0.5)),
+                         layout_strategy=fixedPositionMenuLayout([(800, 110)]))
 
-        vaga_label = Label("Vagabonds: ")
-        vaga_count = Label("")
+        def start_stage(self):
+            self.logic.stage = True
+            self.parent.do(Hide())
 
-        militiar_label = Label("Militiars: ")
-        militiar_count = Label("")
+class WaveReportLayer(Layer):
 
-        looter_label = Label("Looters: ")
-        looter_count = Label("")
+    def __init__(self):
+        super().__init__()
 
-        defender_label = Label("Defendors: ")
-        defender_count = Label("")
+        ws = director.get_window_size()
 
-        agressor_label = Label("Agressors: ")
-        agressor_count = Label("")
+        color_fill = ColorLayer(0, 191, 255, 255, height = 800, width = 800)
+        color_fill.position = (250, 0)
+        self.add(color_fill)
 
-        champion_label = Label("Champion: ")
-        champion_count = Label("")
+        self.add(Label("REPORT OF THE NEXT WAVE", font_size = 34, x = 320, y = 700))
+        self.add(Label("Vagabonds: ", color = (0, 240, 0, 255), font_size = 32, x = 400, y = 600))
+        self.add(Label("Militiars: ", color = (0, 240, 0, 255), font_size = 32, x = 400, y = 550))
+        self.add(Label("Looters: ", color = (0, 240, 0, 255), font_size = 32, x = 400, y = 500))
+        self.add(Label("Defendors: ", color = (0, 240, 0, 255), font_size = 32, x = 400, y = 450))
+        self.add(Label("Agressors: ", color = (0, 240, 0, 255), font_size = 32, x = 400, y = 400))
+        self.add(Label("Champions: ", color = (0, 240, 0, 255), font_size = 32, x = 400, y = 350))
 
-        self.add(vaga_label)
-        self.add(vaga_count)
-        self.add(militiar_label)
-        self.add(militiar_count)
-        self.add(defender_label)
-        self.add(defender_count)
-        self.add(agressor_label)
-        self.add(agressor_count)
-        self.add(champion_label)
-        self.add(champion_count)
+        self.vaga_count = Label("0",  font_size = 32, x = 750, y = 600)
+        self.mili_count = Label("0",  font_size = 32, x = 750, y = 550)
+        self.loot_count = Label("0",  font_size = 32, x = 750, y = 500)
+        self.defe_count = Label("0",  font_size = 32, x = 750, y = 450)
+        self.agre_count = Label("0",  font_size = 32, x = 750, y = 400)
+        self.cham_count = Label("0",  font_size = 32, x = 750, y = 350)
 
-    def start_page(self):
-        self.logic.stage = True
-        self.logic.load_next_wave()
+        self.add(self.vaga_count)
+        self.add(self.mili_count)
+        self.add(self.defe_count)
+        self.add(self.agre_count)
+        self.add(self.cham_count)
 
+    def show(self, vagabonds, militiars, looters, defendors, agressors, champions):
+        self.vaga_count.element.text = str(vagabonds)
+        self.mili_count.element.text = str(militiars)
+        self.loot_count.element.text = str(looters)
+        self.defe_count.element.text = str(defendors)
+        self.agre_count.element.text = str(agressors)
+        self.cham_count.element.text = str(champions)
 
 class HUDLayer(Layer):
     def __init__(self):
@@ -217,7 +261,6 @@ class DynamicLayer(Layer):
     def bring(self, minion):
         if minion == "gatherer":
             if self.gathval:
-
                 mini = Sprite(load_animation("resources/gatherer_coming.gif"),
                               position = (spawn_place[minion][0] + minion_move_to[minion][0],
                                           spawn_place[minion][1] + minion_move_to[minion][1]))
@@ -284,63 +327,18 @@ class RootLayer(Layer):
 
         dynamic_layer = DynamicLayer()
         hud_layer = HUDLayer()
-        self.logic = Logic(dynamic_layer, hud_layer)
-
         wave_report = WaveReportLayer(self.logic)
         wave_report.do(Hide())
+        self.logic = Logic(dynamic_layer, hud_layer, wave_report)
+
+        wave_report.add(WaveReportMenu(self.logic))
 
         self.add(GroundLayer(),               z=0)
         self.add(StaticLayer(self.logic),     z=1)
         self.add(dynamic_layer,               z=2)
         self.add(GUILayer(self.logic),        z=3)
         self.add(hud_layer,                   z=4)
-        self.add(WaveReportLayer(self.logic), z=5)
-
-class HuntersLayer(Layer):
-
-    is_event_handler = True   
-
-    def __init__(self):
-        super().__init__()
-        ws = director.get_window_size()
-
-        self.background_sprite = Sprite("resources/HuntersMenu.png")
-        self.background_sprite.position = (ws[0]/2, ws[1]/2)
-        self.add(self.background_sprite, z=0)
-    def on_mouse_press (self, x, y, buttons, modifiers):
-        """This function is called when any mouse button is pressed
-
-        (x, y) are the physical coordinates of the mouse
-        'buttons' is a bitwise or of pyglet.window.mouse constants LEFT, MIDDLE, RIGHT
-        'modifiers' is a bitwise or of pyglet.window.key modifier constants
-           (values like 'SHIFT', 'OPTION', 'ALT')
-        """
-        self.posx, self.posy = director.get_virtual_coordinates (x, y)
-        if self.posx <  250  and self.posy > 930: 
-            director.pop()
-
-class SoldiersLayer(Layer):
-
-    is_event_handler = True   
-
-    def __init__(self):
-        super().__init__()
-        ws = director.get_window_size()
-
-        self.background_sprite = Sprite("resources/SoldiersMenu.png")
-        self.background_sprite.position = (ws[0]/2, ws[1]/2)
-        self.add(self.background_sprite, z=0)
-    def on_mouse_press (self, x, y, buttons, modifiers):
-        """This function is called when any mouse button is pressed
-
-        (x, y) are the physical coordinates of the mouse
-        'buttons' is a bitwise or of pyglet.window.mouse constants LEFT, MIDDLE, RIGHT
-        'modifiers' is a bitwise or of pyglet.window.key modifier constants
-           (values like 'SHIFT', 'OPTION', 'ALT')
-        """
-        self.posx, self.posy = director.get_virtual_coordinates (x, y)
-        if self.posx <  250  and self.posy > 930: 
-            director.pop()
+        self.add(wave_report,                 z=5)
 
 
 def main():
