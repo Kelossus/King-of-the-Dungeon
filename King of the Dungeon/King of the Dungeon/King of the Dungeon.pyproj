@@ -29,6 +29,9 @@
     <Compile Include="king_of_the_dungeon.py" />
     <Compile Include="data.py" />
     <Compile Include="logic.py" />
+    <Compile Include="setup.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="resources\" />

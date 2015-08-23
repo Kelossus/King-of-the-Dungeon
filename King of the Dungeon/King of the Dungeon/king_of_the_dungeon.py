@@ -2,7 +2,7 @@
 from cocos.director import director
 from cocos.scene import Scene
 from cocos.sprite import Sprite
-from cocos.layer import Layer
+from cocos.layer import Layer, ColorLayer
 from cocos.text import Label
 from cocos.menu import Menu, ImageMenuItem, MenuItem, fixedPositionMenuLayout
 from cocos.actions import *
@@ -13,33 +13,52 @@ from data import *
 
 from logic import Gold, Logic
 
+def load_animation(path, *args, **kargs):
+    return path
+
 class HUDLayer(Layer):
     def __init__(self):
         super().__init__()
 
-        self.count_goblin = Label("5", x=200, y=800)
-        self.count_hobgoblin = Label("0", x=250, y=800)
-        self.count_orc = Label("0", x=301, y=800)
-        self.count_madgnome = Label("0", x=350, y=800)
-        self.count_necro = Label("0", x=400, y=800)
-        self.count_miner = Label("0", x=450, y=800)
-        self.count_gatherer = Label("0", x=500, y=800)
-        self.count_corpses = Label("0", x=10, y=800)
-        self.count_weapons = Label("0", x=50, y=820)
-        self.count_gold = Label("0", x =100, y=840)
+        self.background_fill1 = ColorLayer(255, 255, 255, 255, width = 470, height = 100)
+        self.background_fill1.position = (-280, 770)
 
-        # self.add(self.count_goblin)
-        # self.add(self.count_hobgoblin)
-        # self.add(self.count_orc)
-        # self.add(self.count_madgnome)
-        # self.add(self.count_necro)
-        # self.add(self.count_miner)
-        # self.add(self.count_gatherer)
+        self.icon_corpses = Sprite("resources/corpses.png", position = (-250, 820))
+        self.count_corpses = Label("", x=-210, y=810, font_size = 18, color = (0, 0, 0, 255))
+
+        self.icon_weapons = Sprite("resources/weapons.png", position = (-100, 825), scale = 1.2)
+        self.count_weapons = Label("", x=-55, y=810, font_size = 18, color = (0, 0, 0, 255))
+
+        self.icon_gold = Sprite("resources/gold.png", position = (80, 830), scale = 1.4)
+        self.count_gold = Label("0", x=150, y=810, font_size = 18, color = (0, 0, 0, 255))
+
+        self.background_fill2 = ColorLayer(255, 255, 255, 255, width = 220, height = 100)
+        self.background_fill2.position = (200, 770)
+
+        self.icon_gatherers = Sprite("resources/gatherers.png", position = (240, 820), scale = 1.4)
+        self.count_gatherers = Label("0", x=280, y=810, font_size = 18, color = (0, 0, 0, 255))
+
+        self.icon_miners = Sprite("resources/miners.png", position = (340, 820))
+        self.count_miners = Label("0", x=380, y=810, font_size = 18, color = (0, 0, 0, 255))
+
+        self.add(self.background_fill1)
+
+        self.add(self.icon_corpses)
         self.add(self.count_corpses)
+
+        self.add(self.icon_weapons)
         self.add(self.count_weapons)
+
+        self.add(self.icon_gold)
         self.add(self.count_gold)
 
+        self.add(self.background_fill2)
 
+        self.add(self.icon_gatherers)
+        self.add(self.count_gatherers)
+
+        self.add(self.icon_miners)
+        self.add(self.count_miners)
 
     def update(self, corpses, weapons, gold, miners, gatherers, goblins, hobgoblins, orcs,
                madgnomes, necromancers):
@@ -150,7 +169,7 @@ class DynamicLayer(Layer):
 
 
     def invoke(self, minion):
-        mini = Sprite("resources/"+minion+".gif", position = spawn_place[minion])
+        mini = Sprite(load_animation("resources/"+minion+".gif"), position = spawn_place[minion])
         mini.scale = minion_scale
         self.add(mini) 
 
@@ -169,14 +188,14 @@ class DynamicLayer(Layer):
                 mini.do(MoveTo(spawn_place[minion], minion_move_time) + CallFunc(mini.kill))
                 self.gathval = False
             else:
-                mini1 = Sprite("resources/gatherer.gif", position = spawn_place[minion])
+                mini1 = Sprite(load_animation("resources/gatherer.gif"), position = spawn_place[minion])
                 mini1.scale = minion_scale
                 self.add(mini1)               
                 mini1.do(MoveBy(minion_move_to[minion], minion_move_time) + CallFunc(mini1.kill))
                 self.gathval = True
         elif minion == "miner":
             if self.minval:
-                mini = Sprite("resources/miner.gif", 
+                mini = Sprite(load_animation("resources/miner.gif"), 
                             position = (spawn_place[minion ][0] + minion_move_to[minion][0],
                             spawn_place[minion][1] + minion_move_to[minion][1]))
                 mini.scale = minion_scale
@@ -185,7 +204,7 @@ class DynamicLayer(Layer):
                 mini.do(MoveTo( (spawn_place[minion]), minion_move_time) + CallFunc(mini.kill) )
                 self.minval = False
             else:
-                mini1 = Sprite("resources/miner.gif", position = spawn_place[minion])
+                mini1 = Sprite(load_animation("resources/miner.gif"), position = spawn_place[minion])
                 mini1.scale = minion_scale
                 self.add(mini1)               
                 mini1.do(MoveBy(minion_move_to[minion], minion_move_time) + CallFunc(mini1.kill))
@@ -196,8 +215,7 @@ class StaticLayer(Layer):
     def __init__(self, logic):
         super().__init__()
 
-        self.monster = Sprite("resources/monster.gif", position = monster_pos)
-       # self.monster = Sprite(load_animation("resources/monster.gif"), position = monster_pos)
+        self.monster = Sprite(load_animation("resources/monster.gif"), position = monster_pos)
         self.gold = Gold(self)
 
         logic.push_handlers(self.gold)
@@ -222,7 +240,7 @@ class GroundLayer(Layer):
 class RootLayer(Layer):
     def __init__(self):
         super().__init__()
-        
+
         ws = director.get_window_size()
         self.scale_x = ws[0]/window_original[0]
         self.scale_y = ws[1]/window_original[1]
