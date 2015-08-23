@@ -137,13 +137,13 @@ class Logic(EventDispatcher):
         return False
 
     def load_next_wave(self):
-        self.current_wave += 1
-        print(self.current_wave, "   ", len(data.waves))
-        if (self.current_wave >= len(data.waves)):
+        if (self.current_wave >= len(data.waves) - 1):
             print("you win")
             self.stage = False
             return 
 
+        self.current_wave += 1
+        print(self.current_wave, "   ", len(data.waves))
         for i in range(5):
             for j in range(data.waves[self.current_wave][i]):
                 self.hunters.append([i,list(data.hunters[i])])
