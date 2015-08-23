@@ -16,6 +16,52 @@ from logic import Gold, Logic
 def load_animation(path, *args, **kargs):
     return path
 
+class WaveReportLayer(Menu):
+    def __init__(self, logic):
+        super().init()
+
+        this.logic = logic
+
+        self.create_menu([MenuItem("START WAVE", self.start_stage)],
+                         activated_effect=None,
+                         selected_effect=None,
+                         unselected_effect=None,
+                         layout_strategy=fixedPositionMenuLayout([(1100, 850)]))
+
+        vaga_label = Label("Vagabonds: ")
+        vaga_count = Label("")
+
+        militiar_label = Label("Militiars: ")
+        militiar_count = Label("")
+
+        looter_label = Label("Looters: ")
+        looter_count = Label("")
+
+        defender_label = Label("Defendors: ")
+        defender_count = Label("")
+
+        agressor_label = Label("Agressors: ")
+        agressor_count = Label("")
+
+        champion_label = Label("Champion: ")
+        champion_count = Label("")
+
+        self.add(vaga_label)
+        self.add(vaga_count)
+        self.add(militiar_label)
+        self.add(militiar_count)
+        self.add(defender_label)
+        self.add(defender_count)
+        self.add(agressor_label)
+        self.add(agressor_count)
+        self.add(champion_label)
+        self.add(champion_count)
+
+    def start_page(self):
+        self.logic.stage = True
+        self.logic.load_next_wave()
+
+
 class HUDLayer(Layer):
     def __init__(self):
         super().__init__()
@@ -130,12 +176,6 @@ class GUILayer(Menu):
         houses.append(house_miner)
         positions.append(spawn_place.get("miner"))
 
-        ############ the fucking start ###################
-
-        start_butt = MenuItem ("START WAVE", self.start_stage)
-        houses.append(start_butt)
-        positions.append((1100, 850))
-
         ############    create menu    ###################
 
         self.create_menu(houses,
@@ -154,10 +194,6 @@ class GUILayer(Menu):
         rot = Accelerate(RotateBy(angle, duration), 2)
         rot2 = Accelerate(RotateBy(-angle * 2, duration), 2)
         return rot + (rot2 + Reverse(rot2)) * 2 + Reverse(rot)
-
-    def start_stage(self):
-        self.logic.stage = True
-        self.logic.load_next_wave()
 
 
 
@@ -251,17 +287,22 @@ class RootLayer(Layer):
 
         self.do(Repeat(CallFunc(self.logic.update) + Delay(update_delay)))
 
-        self.add(GroundLayer(),           z=0)
-        self.add(StaticLayer(self.logic), z=1)
-        self.add(dynamic_layer,           z=2)
-        self.add(GUILayer(self.logic),    z=3)
-        self.add(hud_layer,               z=4)
+        wave_report = WaveReportLayer(self.logic)
+        wave_report.do(Hide())
+
+        self.add(GroundLayer(),               z=0)
+        self.add(StaticLayer(self.logic),     z=1)
+        self.add(dynamic_layer,               z=2)
+        self.add(GUILayer(self.logic),        z=3)
+        self.add(hud_layer,                   z=4)
+        self.add(WaveReportLayer(self.logic), z=5)
 
 
 
 def main():
     director.init(**window)
     main_scene = Scene(RootLayer())
+    from pyglet.media import load
     director.run(main_scene)
 
 if __name__ == '__main__':
