@@ -63,8 +63,8 @@ class Logic(EventDispatcher):
         self.battle_background_songs = [pyglet.media.load("resources/audios/battle_background/" + str(i) + ".wav", streaming = False) for i in range(11)]
             # 0: vagabound; 1: militia; 2: looter; 3: agressor; 4: defender; 5: champion
         self.death_sounds = { 
-                # "goblin": pyglet.media.load("resources/audios/death/goblin.ogg", streaming = False),
-                # "hobgoblin": pyglet.media.load("resources/audios/death/hobgoblin.ogg", streaming = False),
+                "goblin": pyglet.media.load("resources/audios/death/goblin.wav", streaming = False),
+                "hobgoblin": pyglet.media.load("resources/audios/death/hobgoblin.wav", streaming = False),
                 "orc": pyglet.media.load("resources/audios/death/orc.wav", streaming = False),
                 "madgnome": pyglet.media.load("resources/audios/death/madgnome.wav", streaming = False),
                 "necromancer": pyglet.media.load("resources/audios/death/necro.wav", streaming = False),
