@@ -4,6 +4,7 @@ from random import shuffle
 from queue import Queue
 
 from cocos.sprite import Sprite
+from cocos.cocosnode import CocosNode
 
 from pyglet.image import load
 from pyglet.event import EventDispatcher
@@ -35,7 +36,7 @@ class Gold():
                             scale = gold_scale))
             self.update_turn = not self.update_turn
 
-class Logic(EventDispatcher):
+class Logic(CocosNode, EventDispatcher):
     def __init__(self, dynamic_layer, hud_layer):
         super().__init__()
 
