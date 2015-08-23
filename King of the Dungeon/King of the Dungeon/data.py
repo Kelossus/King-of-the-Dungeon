@@ -28,11 +28,11 @@ gold_scale = 1.5
 # minions
 
 soldiers = { # ((attack, defense), corpse cost, weapon cost)
-	"goblin": 			((1, 1), 1, 0),
-	"hobgoblin": 		((2, 2), 1, 1),
-	"orc": 				((2, 4), 2, 2), # they have a 50% chance to attack twice, if they kill in the first attack they take no damage
-	"madgnome": 		((2,1), 1, 2), # spawn madgnome_count when bought
-	"necromancer": 		((0,1), 0, 0) # costs gold
+	"goblin": 			([1, 1], 1, 0),
+	"hobgoblin": 		([2, 2], 1, 1),
+	"orc": 				([2, 4], 2, 2), # they have a 50% chance to attack twice, if they kill in the first attack they take no damage
+	"madgnome": 		([2, 1], 1, 2), # spawn madgnome_count when bought
+	"necromancer": 		([0, 1], 0, 0) # costs gold
 }
 
 farmers = { # (cost, success rate, gathred gold, gathered corpses, gathered weapons)
@@ -84,6 +84,6 @@ hunters = ( # (attack, defense)
 )
 
 waves = ( # (vagabound, militia, looter, defender, agressor, champion)
-	(5, 1, 0, 0, 0),
-	(6, 3, 2, 0, 0)
+	(5, 1, 0, 0, 0, 0),
+	(6, 3, 2, 0, 0, 0)
 )

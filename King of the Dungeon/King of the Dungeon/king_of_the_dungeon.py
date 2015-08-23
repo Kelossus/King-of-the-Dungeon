@@ -94,6 +94,7 @@ class WaveReportLayer(Layer):
 
         self.add(self.vaga_count)
         self.add(self.mili_count)
+        self.add(self.loot_count)
         self.add(self.defe_count)
         self.add(self.agre_count)
         self.add(self.cham_count)
@@ -105,6 +106,7 @@ class WaveReportLayer(Layer):
         self.defe_count.element.text = str(defendors)
         self.agre_count.element.text = str(agressors)
         self.cham_count.element.text = str(champions)
+        self.do(Show())
 
 class HUDLayer(Layer):
     def __init__(self):
@@ -242,7 +244,6 @@ class GUILayer(Menu):
         self.logic.stage = True
         self.logic.load_next_wave()
 
-
 class DynamicLayer(Layer):
     def __init__(self):
         super().__init__()
@@ -327,9 +328,11 @@ class RootLayer(Layer):
 
         dynamic_layer = DynamicLayer()
         hud_layer = HUDLayer()
-        wave_report = WaveReportLayer(self.logic)
+        wave_report = WaveReportLayer()
         wave_report.do(Hide())
         self.logic = Logic(dynamic_layer, hud_layer, wave_report)
+
+        self.do(Repeat(CallFunc(self.logic.update) + Delay(update_delay)))
 
         wave_report.add(WaveReportMenu(self.logic))
 
