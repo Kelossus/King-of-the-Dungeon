@@ -112,7 +112,6 @@ class HUDLayer(Layer):
         self.count_weapons.element.text = str(weapons)
         self.count_gold.element.text = str(gold)
 
-
 class GUILayer(Menu):
     def __init__(self, logic):
         super().__init__()
@@ -195,6 +194,9 @@ class GUILayer(Menu):
         rot2 = Accelerate(RotateBy(-angle * 2, duration), 2)
         return rot + (rot2 + Reverse(rot2)) * 2 + Reverse(rot)
 
+    def start_stage(self):
+        self.logic.stage = True
+        self.logic.load_next_wave()
 
 
 class DynamicLayer(Layer):
@@ -246,7 +248,6 @@ class DynamicLayer(Layer):
                 mini1.do(MoveBy(minion_move_to[minion], minion_move_time) + CallFunc(mini1.kill))
                 self.minval = True
 
-
 class StaticLayer(Layer):
     def __init__(self, logic):
         super().__init__()
@@ -295,6 +296,51 @@ class RootLayer(Layer):
         self.add(hud_layer,                   z=4)
         self.add(WaveReportLayer(self.logic), z=5)
 
+class HuntersLayer(Layer):
+
+    is_event_handler = True   
+
+    def __init__(self):
+        super().__init__()
+        ws = director.get_window_size()
+
+        self.background_sprite = Sprite("resources/HuntersMenu.png")
+        self.background_sprite.position = (ws[0]/2, ws[1]/2)
+        self.add(self.background_sprite, z=0)
+    def on_mouse_press (self, x, y, buttons, modifiers):
+        """This function is called when any mouse button is pressed
+
+        (x, y) are the physical coordinates of the mouse
+        'buttons' is a bitwise or of pyglet.window.mouse constants LEFT, MIDDLE, RIGHT
+        'modifiers' is a bitwise or of pyglet.window.key modifier constants
+           (values like 'SHIFT', 'OPTION', 'ALT')
+        """
+        self.posx, self.posy = director.get_virtual_coordinates (x, y)
+        if self.posx <  250  and self.posy > 930: 
+            director.pop()
+
+class SoldiersLayer(Layer):
+
+    is_event_handler = True   
+
+    def __init__(self):
+        super().__init__()
+        ws = director.get_window_size()
+
+        self.background_sprite = Sprite("resources/SoldiersMenu.png")
+        self.background_sprite.position = (ws[0]/2, ws[1]/2)
+        self.add(self.background_sprite, z=0)
+    def on_mouse_press (self, x, y, buttons, modifiers):
+        """This function is called when any mouse button is pressed
+
+        (x, y) are the physical coordinates of the mouse
+        'buttons' is a bitwise or of pyglet.window.mouse constants LEFT, MIDDLE, RIGHT
+        'modifiers' is a bitwise or of pyglet.window.key modifier constants
+           (values like 'SHIFT', 'OPTION', 'ALT')
+        """
+        self.posx, self.posy = director.get_virtual_coordinates (x, y)
+        if self.posx <  250  and self.posy > 930: 
+            director.pop()
 
 
 def main():
@@ -302,6 +348,7 @@ def main():
     main_scene = Scene(RootLayer())
     from pyglet.media import load
     director.run(main_scene)
+
 
 if __name__ == '__main__':
     main()

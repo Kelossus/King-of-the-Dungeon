@@ -58,6 +58,23 @@ class Logic(CocosNode, EventDispatcher):
             "necromancer": 0
         }
 
+        self.battle_background_songs = [pyglet.media.load("resources/audios/battle\ background/"+i+".wav", streaming = False) for i in range(11)]
+            # 0: vagabound; 1: militia; 2: looter; 3: agressor; 4: defender; 5: champion
+        self.death_sounds = { 
+                "goblin": pyglet.media.load("resources/audios/death/goblin.ogg",            streaming = False),
+                "hobgoblin": pyglet.media.load("resources/audios/death/hobgoblin.ogg",      streaming = False),
+                "orc": pyglet.media.load("resources/audios/death/orc.wav",                  streaming = False),
+                "madgnome": pyglet.media.load("resources/audios/death/madgnome.wav",        streaming = False),
+                "necromancer": pyglet.media.load("resources/audios/death/necromancer.wav",  streaming = False),
+                "0": pyglet.media.load("resources/audios/death/vagabound.wav",      streaming = False),
+                "1": pyglet.media.load("resources/audios/death/militia.wav",          streaming = False),
+                "2": pyglet.media.load("resources/audios/death/looter.wav",            streaming = False),
+                "3": pyglet.media.load("resources/audios/death/agressor.wav",        streaming = False),
+                "4": pyglet.media.load("resources/audios/death/defender.wav",        streaming = False),
+                "5": pyglet.media.load("resources/audios/death/champion.wav",        streaming = False)
+        }
+
+
         self.soldiers = list()
         self.hunters = list()
 
@@ -65,8 +82,9 @@ class Logic(CocosNode, EventDispatcher):
         self.hud_layer = hud_layer
 
         self.current_wave = -1
+        
+        self.do(Repeat(CallFunc(self.logic.update) + Delay(update_delay)))
 
-        self.do(Repeat(CallFunc(self.logic.update) + Delay(update_delay)))        
 
     def spawn(self, minion):
         if minion in data.soldiers:
@@ -120,13 +138,14 @@ class Logic(CocosNode, EventDispatcher):
 
         for i in range(5):
             for j in range(data.waves[self.current_wave][i]):
-                self.hunters.append(list(data.hunters[i]))
+                self.hunters.append(repr(i),list(data.hunters[i]))
 
     def update(self):
         self.hud_layer.update(self.corpses, self.weapons, self.gold,
                  self.farmers["miner"], self.farmers["gatherer"], self.soldier_each["goblin"], 
                  self.soldier_each["hobgoblin"], self.soldier_each["orc"], self.soldier_each["madgnome"],
                  self.soldier_each["necromancer"] )
+
 
         if self.stage :
             if len(self.hunters) == 0:
@@ -156,20 +175,25 @@ class Logic(CocosNode, EventDispatcher):
         soldier = self.soldiers.pop(0)
         hunter = self.hunters.pop(0)
         if soldier[0] == 'orc' and not data.orc_berserk_chance < random():
-            hunter[1] -= soldier[1][0]
-            if not hunter[1] > 0:
+            hunter[1][1] -= soldier[1][0]
+            if not hunter[1][1] > 0:
                 self.soldiers.append(soldier)
+                self.death_sounds[hunter[1][0]].play()
                 return
         if not (self.soldier_each["necromancer"] * data.necromancer_revival_chance < random()):
-            soldier[1][1] -= hunter[0]
+            soldier[1][1] -= hunter[1][0]
 
-        hunter[1] -= soldier[1][0]
+        hunter[1][1] -= soldier[1][0]
 
 
         if soldier[1][1] > 0 :
             self.soldiers.append(soldier)
+        else:
+            self.death_sounds[soldier[0]].play()
         if hunter[1] > 0:
             self.hunters.append(hunter)
+        else:
+            self.death_sounds[soldier[0]].play()
 
 
 
