@@ -67,7 +67,7 @@ orc_berserk_chance = 0.5
 madgnome_count = 3
 
 necromancer_gold_cost = 10
-necromancer_revival_chance = 0.2
+necromancer_revival_chance = 0.05
 
 spy_frecuency = 0.05
 
