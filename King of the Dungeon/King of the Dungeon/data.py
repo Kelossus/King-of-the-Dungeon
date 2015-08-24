@@ -11,7 +11,7 @@ window_original = (1920, 1080)
 
 # static positioning
 monster_pos = (650, 750)
-gold_pos = ((200, 700), (1100, 700))
+gold_pos = ((200, 670), (1100, 670))
 gold_scale = 1.5
 
 # minions
@@ -81,7 +81,7 @@ waves = { # (vagabound, militia, looter, defender, agressor, champion)
 }
 
 # misc
-start_gold = 50
+start_gold = 20
 start_corpses = 2
 start_weapons = 0
 gold_objective = 100

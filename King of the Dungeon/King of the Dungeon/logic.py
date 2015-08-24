@@ -40,7 +40,7 @@ class Gold():
             self.update_turn = not self.update_turn
 
 class Logic(EventDispatcher):
-    def __init__(self, dynamic_layer, hud_layer, wave_report):
+    def __init__(self, dynamic_layer, hud_layer, wave_report, win, lose):
         super().__init__()
 
         self.corpses = data.start_corpses
@@ -70,7 +70,7 @@ class Logic(EventDispatcher):
             "champion" : 0
         }
 
-        self.battle_background_sounds = [pyglet.media.load("resources/audios/battle_background/" + str(i) + ".wav", streaming = False) for i in range(11)]
+        self.battle_background_sounds = [pyglet.media.load("resources/audios/battle_background/" + str(i) + ".wav", streaming = False) for i in range(10)]
 
         self.death_sounds = { 
                 "goblin": pyglet.media.load("resources/audios/death/goblin.wav", streaming = False),
@@ -101,6 +101,9 @@ class Logic(EventDispatcher):
            (719, 299): True
         }
 
+        self.win = win
+        self.lose = lose
+
         self.dynamic_layer = dynamic_layer
         self.hud_layer = hud_layer
         self.wave_report = wave_report
@@ -108,6 +111,7 @@ class Logic(EventDispatcher):
         self.current_wave = -1
         self.load_next_wave()
         self.wave_report.show(**self.hunter_each)
+        
 
     def spawn(self, minion):
         if minion in data.soldiers:
@@ -162,6 +166,7 @@ class Logic(EventDispatcher):
     def load_next_wave(self):
         if (self.current_wave >= len(list(data.waves.values())[0])-1):
             print("you win")
+            self.win()
             self.stage = False
             return 
 
@@ -191,6 +196,7 @@ class Logic(EventDispatcher):
                 self.stage = False
                 self.load_next_wave()
                 self.wave_report.show(**self.hunter_each)
+                
 
             else:
                 self.farm()
@@ -204,6 +210,7 @@ class Logic(EventDispatcher):
                     self.gold -= sum
                     if self.gold < 0:
                         self.gold = 0
+                        self.lose()
 
     def farm(self):
         for key in data.farmers:

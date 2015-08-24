@@ -469,7 +469,7 @@ class RootLayer(Layer):
         hud_layer = HUDLayer()
         wave_report = WaveReportLayer()
         wave_report.do(Hide())
-        self.logic = Logic(dynamic_layer, hud_layer, wave_report)
+        self.logic = Logic(dynamic_layer, hud_layer, wave_report,self.win, self.lose)
 
         self.do(Repeat(CallFunc(self.logic.update) + Delay(update_delay)))
 
@@ -486,10 +486,64 @@ class RootLayer(Layer):
      def on_mouse_press (self, x, y, buttons, modifiers):
         print( director.get_virtual_coordinates (x, y))
 
+     def win(self):
+         director.replace(Scene(WinLayer()))
+     def lose(self):
+         director.replace(Scene(LoseLayer()))
+
+class StartLayer(Layer):
+
+    is_event_handler = True   
+
+    def __init__(self):
+        super().__init__()
+        ws = director.get_window_size()
+        self.scale_x = ws[0]/window_original[0]
+        self.scale_y = ws[1]/window_original[1]
+        self.background_sprite = Sprite("resources/StartScreen.png")
+        self.background_sprite.position = (ws[0]/2, ws[1]/2)
+        self.add(self.background_sprite, z=0)
+
+    def on_mouse_press (self, x, y, buttons, modifiers):
+        director.replace(Scene(RootLayer()))
+
+
+class WinLayer(Layer):
+
+    is_event_handler = True   
+
+    def __init__(self):
+        super().__init__()
+        ws = director.get_window_size()
+        self.scale_x = ws[0]/window_original[0]
+        self.scale_y = ws[1]/window_original[1]
+        self.background_sprite = Sprite("resources/WinScreen.png")
+        self.background_sprite.position = (ws[0]/2, ws[1]/2)
+        self.add(self.background_sprite, z=0)
+
+    def on_mouse_press (self, x, y, buttons, modifiers):
+        director.replace(Scene(StartLayer()))
+
+
+class LoseLayer(Layer):
+
+    is_event_handler = True   
+
+    def __init__(self):
+        super().__init__()
+        ws = director.get_window_size()
+        self.scale_x = ws[0]/window_original[0]
+        self.scale_y = ws[1]/window_original[1]
+        self.background_sprite = Sprite("resources/LoseScreen.png")
+        self.background_sprite.position = (ws[0]/2, ws[1]/2)
+        self.add(self.background_sprite, z=0)
+
+    def on_mouse_press (self, x, y, buttons, modifiers):
+        director.replace(Scene(StartLayer()))
 
 def main():
     director.init(**window)
-    main_scene = Scene(RootLayer())
+    main_scene = Scene(StartLayer())
 
     player = Player()
     player.queue(load("resources/audios/cave.wav"))
