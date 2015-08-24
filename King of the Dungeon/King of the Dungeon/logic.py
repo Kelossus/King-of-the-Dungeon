@@ -103,6 +103,8 @@ class Logic(EventDispatcher):
 
         self.win = win
         self.lose = lose
+        
+
 
         self.dynamic_layer = dynamic_layer
         self.hud_layer = hud_layer
@@ -110,57 +112,59 @@ class Logic(EventDispatcher):
 
         self.current_wave = -1
         self.load_next_wave()
+        
         self.wave_report.show(**self.hunter_each)
         
 
     def spawn(self, minion):
-        if minion in data.soldiers:
-            corpses = self.corpses - data.soldiers[minion][1]
-            weapons = self.weapons - data.soldiers[minion][2]
-            gold = self.gold
-            if minion == 'necromancer':
-                gold -= necromancer_gold_cost
+        if self.stage:
+            if minion in data.soldiers:
+                corpses = self.corpses - data.soldiers[minion][1]
+                weapons = self.weapons - data.soldiers[minion][2]
+                gold = self.gold
+                if minion == 'necromancer':
+                    gold -= necromancer_gold_cost
 
-            if corpses >= 0 and weapons >= 0 and gold >= 0:
-                self.corpses = corpses
-                self.weapons = weapons
-                self.gold = gold
-                self.dispatch_event('on_gold_gain', self.gold)
+                if corpses >= 0 and weapons >= 0 and gold >= 0:
+                    self.corpses = corpses
+                    self.weapons = weapons
+                    self.gold = gold
+                    self.dispatch_event('on_gold_gain', self.gold)
 
                 
-                self.soldiers.append([minion, data.soldiers[minion][0]])
-
-                if minion == 'madgnome':
                     self.soldiers.append([minion, data.soldiers[minion][0]])
-                    self.soldiers.append([minion, data.soldiers[minion][0]])
-                    self.soldier_each[minion] +=2
-                self.dynamic_layer.invoke(minion)
-                self.soldier_each[minion] +=1
 
-                self.hud_layer.update(self.corpses, self.weapons, self.gold, self.farmers["miner"],
-                              self.farmers["gatherer"], self.soldier_each["goblin"],
-                              self.soldier_each["hobgoblin"], self.soldier_each["orc"],
-                              self.soldier_each["madgnome"], self.soldier_each["necromancer"],
-                              self.hunter_each['vagabound'], self.hunter_each['militia'],
-                              self.hunter_each['looter'], self.hunter_each['agressor'],
-                              self.hunter_each['defender'], self.hunter_each['champion'])
+                    if minion == 'madgnome':
+                        self.soldiers.append([minion, data.soldiers[minion][0]])
+                        self.soldiers.append([minion, data.soldiers[minion][0]])
+                        self.soldier_each[minion] +=2
+                    self.dynamic_layer.invoke(minion)
+                    self.soldier_each[minion] +=1
 
-                return True
-        else:
-            corpses = self.corpses - data.farmers[minion][0]
+                    self.hud_layer.update(self.corpses, self.weapons, self.gold, self.farmers["miner"],
+                                  self.farmers["gatherer"], self.soldier_each["goblin"],
+                                  self.soldier_each["hobgoblin"], self.soldier_each["orc"],
+                                  self.soldier_each["madgnome"], self.soldier_each["necromancer"],
+                                  self.hunter_each['vagabound'], self.hunter_each['militia'],
+                                  self.hunter_each['looter'], self.hunter_each['agressor'],
+                                  self.hunter_each['defender'], self.hunter_each['champion'])
 
-            if corpses >= 0:
-                self.corpses = corpses
-                self.farmers[minion] += 1
-                self.dynamic_layer.invoke(minion)
-                self.hud_layer.update(self.corpses, self.weapons, self.gold, self.farmers["miner"],
-                              self.farmers["gatherer"], self.soldier_each["goblin"],
-                              self.soldier_each["hobgoblin"], self.soldier_each["orc"],
-                              self.soldier_each["madgnome"], self.soldier_each["necromancer"],
-                              self.hunter_each['vagabound'], self.hunter_each['militia'],
-                              self.hunter_each['looter'], self.hunter_each['agressor'],
-                              self.hunter_each['defender'], self.hunter_each['champion'])
-                return True
+                    return True
+            else:
+                corpses = self.corpses - data.farmers[minion][0]
+
+                if corpses >= 0:
+                    self.corpses = corpses
+                    self.farmers[minion] += 1
+                    self.dynamic_layer.invoke(minion)
+                    self.hud_layer.update(self.corpses, self.weapons, self.gold, self.farmers["miner"],
+                                  self.farmers["gatherer"], self.soldier_each["goblin"],
+                                  self.soldier_each["hobgoblin"], self.soldier_each["orc"],
+                                  self.soldier_each["madgnome"], self.soldier_each["necromancer"],
+                                  self.hunter_each['vagabound'], self.hunter_each['militia'],
+                                  self.hunter_each['looter'], self.hunter_each['agressor'],
+                                  self.hunter_each['defender'], self.hunter_each['champion'])
+                    return True
         return False
 
     def load_next_wave(self):

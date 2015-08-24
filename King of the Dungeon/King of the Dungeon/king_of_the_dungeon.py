@@ -135,8 +135,8 @@ class HUDLayer(Layer):
 
         # Farmers stats
 
-        self.cost_gatherers = Label("1C", x=980, y=795, font_size = 18, color = (0, 0, 0, 255))
-        self.cost_miners = Label("1C", x=1080, y=795, font_size = 18, color = (0, 0, 0, 255))
+        self.cost_gatherers = Label(str(farmers['gatherer'][0]) + "C", x=980, y=795, font_size = 18, color = (0, 0, 0, 255))
+        self.cost_miners = Label(str(farmers['miner'][0]) + "C", x=1080, y=795, font_size = 18, color = (0, 0, 0, 255))
 
         self.add(self.cost_gatherers)
         self.add(self.cost_miners)
@@ -144,21 +144,39 @@ class HUDLayer(Layer):
         # Soldiers
 
         self.count_goblins = Label("0", x=-180, y=630, font_size = 18, color = (0, 0, 0, 255))
-        self.spec_goblins = Label("1/1 | 1C", x=-245, y=590, font_size = 16, color = (0, 0, 0, 255))
+        self.spec_goblins = Label(str(soldiers['goblin'][0][0]) + '/' +
+                                  str(soldiers['goblin'][0][1]) + " | " +
+                                  str(soldiers['goblin'][1]) + 'C ' +
+                                  str(soldiers['goblin'][2]) + 'W',
+                                  x=-270, y=590, font_size = 14, color = (0, 0, 0, 255))
 
         self.count_hobgoblins = Label("0", x=-180, y=520, font_size = 18, color = (0, 0, 0, 255))
-        self.spec_hobgoblins = Label("2/2 | 1C 1W", x=-260, y=480, font_size = 16, color = (0, 0, 0, 255))
+        self.spec_hobgoblins = Label(str(soldiers['hobgoblin'][0][0]) + '/' +
+                                     str(soldiers['hobgoblin'][0][1]) + " | " +
+                                     str(soldiers['hobgoblin'][1]) + 'C ' +
+                                     str(soldiers['hobgoblin'][2]) + 'W',
+                                     x=-270, y=480, font_size = 14, color = (0, 0, 0, 255))
 
         self.count_orcs = Label("0", x=-180, y=410, font_size = 18, color = (0, 0, 0, 255))
-        self.spec_orcs = Label("2/4 | 2C 2W", x=-260, y=360, font_size = 16, color = (0, 0, 0, 255))
+        self.spec_orcs = Label(str(soldiers['orc'][0][0]) + '/' +
+                               str(soldiers['orc'][0][1]) + " | " +
+                               str(soldiers['orc'][1]) + 'C ' +
+                               str(soldiers['orc'][2]) + 'W',
+                               x=-275, y=360, font_size = 14, color = (0, 0, 0, 255))
 
         self.count_madgnomes = Label("0", x=-180, y=290, font_size = 18, color = (0, 0, 0, 255))
-        self.spec_madgnomes = Label("2/1 x3 | 1C 2W", x=-275, y=240, font_size = 16, color = (0, 0, 0, 255))
+        self.spec_madgnomes = Label(str(soldiers['madgnome'][0][0]) + '/' +
+                                        str(soldiers['madgnome'][0][1]) + " | " +
+                                        str(soldiers['madgnome'][1]) + 'C ' +
+                                        str(soldiers['madgnome'][2]) + 'W',
+                                        x=-275, y=240, font_size = 14, color = (0, 0, 0, 255))
 
         self.count_necromancers = Label("0", x=-180, y=160, font_size = 18, color = (0, 0, 0, 255))
-        self.spec_necromancers = Label("0/1 | 10G", x=-250, y=120, font_size = 16, color = (0, 0, 0, 255))
-
-
+        self.spec_necromancers = Label(str(soldiers['necromancer'][0][0]) + '/' +
+                                           str(soldiers['necromancer'][0][1]) + " | " +
+                                           str(soldiers['necromancer'][1]) + 'C ' +
+                                           str(soldiers['necromancer'][2]) + 'W',
+                                           x=-280, y=110, font_size = 14, color = (0, 0, 0, 255))
         self.add(self.count_goblins)
         self.add(self.spec_goblins)
 
@@ -176,24 +194,35 @@ class HUDLayer(Layer):
 
         # Hunters
         
-        self.count_vagabound = Label("0", x=1440, y=625, font_size = 18, color = (0, 0, 0, 255))
-        self.spec_vagabound = Label("1/1", x=1440, y=590, font_size = 16, color = (0, 0, 0, 255))
+        self.count_vagabound = Label("0", x=1440, y=635, font_size = 18, color = (0, 0, 0, 255))
+        self.spec_vagabound = Label(str(hunters['vagabound'][0])+ '/' +
+                                    str(hunters['vagabound'][1]),
+                                    x=1440, y=595, font_size = 16, color = (0, 0, 0, 255))
 
-        self.count_militia = Label("0", x=1440, y=520, font_size = 18, color = (0, 0, 0, 255))
-        self.spec_militia = Label("1/2", x=1440, y=480, font_size = 16, color = (0, 0, 0, 255))
+        self.count_militia = Label("0", x=1440, y=540, font_size = 18, color = (0, 0, 0, 255))
+        self.spec_militia = Label(str(hunters['militia'][0]) + '/' +
+                                  str(hunters['militia'][1]),
+                                  x=1440, y=500, font_size = 16, color = (0, 0, 0, 255))
 
-        self.count_looter = Label("0", x=1440, y=410, font_size = 18, color = (0, 0, 0, 255))
-        self.spec_looter = Label("2/1", x=1440, y=360, font_size = 16, color = (0, 0, 0, 255))
+        self.count_looter = Label("0", x=1440, y=435, font_size = 18, color = (0, 0, 0, 255))
+        self.spec_looter = Label(str(hunters['looter'][0]) + '/' +
+                                 str(hunters['looter'][1]),
+                                 x=1440, y=390, font_size = 16, color = (0, 0, 0, 255))
 
-        self.count_agressor = Label("0", x=1440, y=290, font_size = 18, color = (0, 0, 0, 255))
-        self.spec_agressor = Label("3/2", x=1440, y=240, font_size = 16, color = (0, 0, 0, 255))
+        self.count_agressor = Label("0", x=1440, y=325, font_size = 18, color = (0, 0, 0, 255))
+        self.spec_agressor = Label(str(hunters['agressor'][0]) + '/' +
+                                   str(hunters['agressor'][1]),
+                                   x=1440, y=285, font_size = 16, color = (0, 0, 0, 255))
 
-        self.count_defender = Label("0", x=1440, y=160, font_size = 18, color = (0, 0, 0, 255))
-        self.spec_defender = Label("1/5", x=1440, y=120, font_size = 16, color = (0, 0, 0, 255))
+        self.count_defender = Label("0", x=1440, y=205, font_size = 18, color = (0, 0, 0, 255))
+        self.spec_defender = Label(str(hunters['defender'][0]) + '/' +
+                                   str(hunters['defender'][1]),
+                                   x=1440, y=165, font_size = 16, color = (0, 0, 0, 255))
 
-        self.count_champion = Label("0", x=1440, y=50, font_size = 18, color = (0, 0, 0, 255))
-        self.spec_champion = Label("7/7", x=1440, y=10, font_size = 16, color = (0, 0, 0, 255))
-
+        self.count_champion = Label("0", x=1440, y=100, font_size = 18, color = (0, 0, 0, 255))
+        self.spec_champion = Label(str(hunters['champion'][0]) + '/' +
+                                   str(hunters['champion'][1]),
+                                   x=1440, y=55, font_size = 16, color = (0, 0, 0, 255))
         
         self.add(self.count_vagabound)
         self.add(self.spec_vagabound)
@@ -236,7 +265,6 @@ class GUILayer(Menu):
     def __init__(self, logic):
         super().__init__()
         self.logic = logic
-
         positions = []
         houses = []
         self.cds = []
@@ -471,6 +499,8 @@ class RootLayer(Layer):
         wave_report.do(Hide())
         self.logic = Logic(dynamic_layer, hud_layer, wave_report,self.win, self.lose)
 
+
+
         self.do(Repeat(CallFunc(self.logic.update) + Delay(update_delay)))
 
         wave_report.add(WaveReportMenu(self.logic))
@@ -490,6 +520,9 @@ class RootLayer(Layer):
          director.replace(Scene(WinLayer()))
      def lose(self):
          director.replace(Scene(LoseLayer()))
+     
+
+
 
 class StartLayer(Layer):
 
