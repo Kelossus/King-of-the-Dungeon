@@ -9,17 +9,6 @@ window = {
 
 window_original = (1920, 1080)
 
-# misc
-start_gold = 7
-start_corpses = 9999
-start_weapons = 9999
-gold_objective = 100
-
-update_delay = 0.5
-
-house_scale= 6
-minion_scale=1.5 	
-
 # static positioning
 monster_pos = (650, 750)
 gold_pos = ((200, 700), (1100, 700))
@@ -36,8 +25,8 @@ soldiers = { # ((attack, defense), corpse cost, weapon cost)
 }
 
 farmers = { # (cost, success rate, gathred gold, gathered corpses, gathered weapons)
-	"miner": 			(1, 0.01, 5, 0, 0),
-	"gatherer": 		(1, 0.08, 1, 5, 1)
+	"miner": 			(1, 0.05, 5, 0, 0),
+	"gatherer": 		(1, 0.04, 1, 5, 1)
 }
 
 spawn_place = {
@@ -69,21 +58,39 @@ madgnome_count = 3
 necromancer_gold_cost = 10
 necromancer_revival_chance = 0.05
 
-spy_frecuency = 0.05
-
-
 # treasure hunters
 
-hunters = ( # (attack, defense)
-			(1, 1), # vagabound
-	        (1, 2), # militia
-			(2, 1), # looter
-			(1, 5), # defender
-			(3, 2), # agressor
-			(5, 5)  # champion
-)
+hunters = { # (attack, defense)
+		"vagabound":    (1, 1),  
+	    "militia":      (1, 2),  
+		"looter":	    (2, 1),  
+		"defender":	    (1, 5),  
+		"agressor":	    (3, 2),  
+		"champion":	    (7, 7)   
+}
 
-waves = ( # (vagabound, militia, looter, defender, agressor, champion)
-	(5, 1, 0, 0, 0, 0),
-	(6, 3, 2, 0, 0, 0)
-)
+waves = { # (vagabound, militia, looter, defender, agressor, champion)
+
+	"vagabound": (5,6,4,2,1,1,1,30),
+    "militia":   (1,3,5,5,3,3,3,0),
+    "looter":    (0,2,2,3,5,4,4,0),
+    "agressor":  (0,0,3,2,3,5,5,0),
+    "defender":  (0,0,0,1,2,2,2,0),
+    "champion":  (0,0,0,0,0,0,1,2),
+
+}
+
+# misc
+start_gold = 50
+start_corpses = 2
+start_weapons = 0
+gold_objective = 100
+
+update_delay = 2
+
+house_scale = 6
+minion_scale =1.5
+
+col_radious = 20
+
+building_cool_down = 0.75

@@ -8,13 +8,12 @@ from cocos.menu import Menu, ImageMenuItem, MenuItem, fixedPositionMenuLayout
 from cocos.actions import *
 
 from pyglet.image import load_animation
+from pyglet.media import load, Player
 
 from data import *
 
 from logic import Gold, Logic
-
-def load_animation(path, *args, **kargs):
-    return path
+from math import floor
 
 class HuntersLayer(Layer):
 
@@ -23,14 +22,15 @@ class HuntersLayer(Layer):
     def __init__(self):
         super().__init__()
         ws = director.get_window_size()
-
+        self.scale_x = ws[0]/window_original[0]
+        self.scale_y = ws[1]/window_original[1]
         self.background_sprite = Sprite("resources/HuntersMenu.png")
         self.background_sprite.position = (ws[0]/2, ws[1]/2)
         self.add(self.background_sprite, z=0)
 
     def on_mouse_press (self, x, y, buttons, modifiers):
         self.posx, self.posy = director.get_virtual_coordinates (x, y)
-        if self.posx <  250  and self.posy > 930: 
+        if self.posx <  420  and self.posy > 620: 
             director.pop()
 
 class SoldiersLayer(Layer):
@@ -40,14 +40,15 @@ class SoldiersLayer(Layer):
     def __init__(self):
         super().__init__()
         ws = director.get_window_size()
-
+        self.scale_x = ws[0]/window_original[0]
+        self.scale_y = ws[1]/window_original[1]
         self.background_sprite = Sprite("resources/SoldiersMenu.png")
         self.background_sprite.position = (ws[0]/2, ws[1]/2)
         self.add(self.background_sprite, z=0)
 
     def on_mouse_press (self, x, y, buttons, modifiers):
         self.posx, self.posy = director.get_virtual_coordinates (x, y)
-        if self.posx <  250  and self.posy > 930: 
+        if self.posx <  420  and self.posy > 620:
             director.pop()
 
 class WaveReportMenu(Menu):
@@ -78,12 +79,12 @@ class WaveReportLayer(Layer):
         self.add(color_fill)
 
         self.add(Label("REPORT OF THE NEXT WAVE", font_size = 34, x = 320, y = 700))
-        self.add(Label("Vagabonds: ", color = (0, 240, 0, 255), font_size = 32, x = 400, y = 600))
-        self.add(Label("Militiars: ", color = (0, 240, 0, 255), font_size = 32, x = 400, y = 550))
-        self.add(Label("Looters: ", color = (0, 240, 0, 255), font_size = 32, x = 400, y = 500))
-        self.add(Label("Defendors: ", color = (0, 240, 0, 255), font_size = 32, x = 400, y = 450))
-        self.add(Label("Agressors: ", color = (0, 240, 0, 255), font_size = 32, x = 400, y = 400))
-        self.add(Label("Champions: ", color = (0, 240, 0, 255), font_size = 32, x = 400, y = 350))
+        self.add(Label("Vagabonds: ", color = (255, 255, 255, 255), font_size = 32, x = 400, y = 600))
+        self.add(Label("Militiars: ", color = (255, 255, 255, 255), font_size = 32, x = 400, y = 550))
+        self.add(Label("Looters: ", color = (255, 255, 255, 255), font_size = 32, x = 400, y = 500))
+        self.add(Label("Defendors: ", color = (255, 255, 255, 255), font_size = 32, x = 400, y = 450))
+        self.add(Label("Agressors: ", color = (255, 255, 255, 255), font_size = 32, x = 400, y = 400))
+        self.add(Label("Champions: ", color = (255, 255, 255, 255), font_size = 32, x = 400, y = 350))
 
         self.vaga_count = Label("0",  font_size = 32, x = 750, y = 600)
         self.mili_count = Label("0",  font_size = 32, x = 750, y = 550)
@@ -99,64 +100,137 @@ class WaveReportLayer(Layer):
         self.add(self.agre_count)
         self.add(self.cham_count)
 
-    def show(self, vagabonds, militiars, looters, defendors, agressors, champions):
-        self.vaga_count.element.text = str(vagabonds)
-        self.mili_count.element.text = str(militiars)
-        self.loot_count.element.text = str(looters)
-        self.defe_count.element.text = str(defendors)
-        self.agre_count.element.text = str(agressors)
-        self.cham_count.element.text = str(champions)
+    def show(self, vagabound, militia, looter, defender, agressor, champion):
+        
+
+        self.vaga_count.element.text = str(vagabound)
+        self.mili_count.element.text = str(militia)
+        self.loot_count.element.text = str(looter)
+        self.defe_count.element.text = str(defender)
+        self.agre_count.element.text = str(agressor)
+        self.cham_count.element.text = str(champion)
         self.do(Show())
 
 class HUDLayer(Layer):
     def __init__(self):
         super().__init__()
 
-        self.background_fill1 = ColorLayer(255, 255, 255, 255, width = 470, height = 100)
-        self.background_fill1.position = (-280, 770)
+        # Resources
 
-        self.icon_corpses = Sprite("resources/corpses.png", position = (-250, 820))
-        self.count_corpses = Label("", x=-210, y=810, font_size = 18, color = (0, 0, 0, 255))
+        self.count_corpses = Label("", x=-210, y=795, font_size = 18, color = (0, 0, 0, 255))
+        self.count_weapons = Label("", x=-55, y=795, font_size = 18, color = (0, 0, 0, 255))
+        self.count_gold = Label("0", x=120, y=795, font_size = 18, color = (0, 0, 0, 255))
 
-        self.icon_weapons = Sprite("resources/weapons.png", position = (-100, 825), scale = 1.2)
-        self.count_weapons = Label("", x=-55, y=810, font_size = 18, color = (0, 0, 0, 255))
-
-        self.icon_gold = Sprite("resources/gold.png", position = (80, 830), scale = 1.4)
-        self.count_gold = Label("0", x=150, y=810, font_size = 18, color = (0, 0, 0, 255))
-
-        self.background_fill2 = ColorLayer(255, 255, 255, 255, width = 220, height = 100)
-        self.background_fill2.position = (200, 770)
-
-        self.icon_gatherers = Sprite("resources/gatherers.png", position = (240, 820), scale = 1.4)
-        self.count_gatherers = Label("0", x=280, y=810, font_size = 18, color = (0, 0, 0, 255))
-
-        self.icon_miners = Sprite("resources/miners.png", position = (340, 820))
-        self.count_miners = Label("0", x=380, y=810, font_size = 18, color = (0, 0, 0, 255))
-
-        self.add(self.background_fill1)
-
-        self.add(self.icon_corpses)
         self.add(self.count_corpses)
-
-        self.add(self.icon_weapons)
         self.add(self.count_weapons)
-
-        self.add(self.icon_gold)
         self.add(self.count_gold)
 
-        self.add(self.background_fill2)
+        # Farmers count
 
-        self.add(self.icon_gatherers)
+        self.count_gatherers = Label("0", x=280, y=795, font_size = 18, color = (0, 0, 0, 255))
+        self.count_miners = Label("0", x=380, y=795, font_size = 18, color = (0, 0, 0, 255))
+
         self.add(self.count_gatherers)
-
-        self.add(self.icon_miners)
         self.add(self.count_miners)
 
+        # Farmers stats
+
+        self.cost_gatherers = Label("1C", x=980, y=795, font_size = 18, color = (0, 0, 0, 255))
+        self.cost_miners = Label("1C", x=1080, y=795, font_size = 18, color = (0, 0, 0, 255))
+
+        self.add(self.cost_gatherers)
+        self.add(self.cost_miners)
+
+        # Soldiers
+
+        self.count_goblins = Label("0", x=-180, y=630, font_size = 18, color = (0, 0, 0, 255))
+        self.spec_goblins = Label("1/1 | 1C", x=-245, y=590, font_size = 16, color = (0, 0, 0, 255))
+
+        self.count_hobgoblins = Label("0", x=-180, y=520, font_size = 18, color = (0, 0, 0, 255))
+        self.spec_hobgoblins = Label("2/2 | 1C 1W", x=-260, y=480, font_size = 16, color = (0, 0, 0, 255))
+
+        self.count_orcs = Label("0", x=-180, y=410, font_size = 18, color = (0, 0, 0, 255))
+        self.spec_orcs = Label("2/4 | 2C 2W", x=-260, y=360, font_size = 16, color = (0, 0, 0, 255))
+
+        self.count_madgnomes = Label("0", x=-180, y=290, font_size = 18, color = (0, 0, 0, 255))
+        self.spec_madgnomes = Label("2/1 x3 | 1C 2W", x=-275, y=240, font_size = 16, color = (0, 0, 0, 255))
+
+        self.count_necromancers = Label("0", x=-180, y=160, font_size = 18, color = (0, 0, 0, 255))
+        self.spec_necromancers = Label("0/1 | 10G", x=-250, y=120, font_size = 16, color = (0, 0, 0, 255))
+
+
+        self.add(self.count_goblins)
+        self.add(self.spec_goblins)
+
+        self.add(self.count_hobgoblins)
+        self.add(self.spec_hobgoblins)
+
+        self.add(self.count_orcs)
+        self.add(self.spec_orcs)
+
+        self.add(self.count_madgnomes)
+        self.add(self.spec_madgnomes)
+
+        self.add(self.count_necromancers)
+        self.add(self.spec_necromancers)
+
+        # Hunters
+        
+        self.count_vagabound = Label("0", x=1440, y=625, font_size = 18, color = (0, 0, 0, 255))
+        self.spec_vagabound = Label("1/1", x=1440, y=590, font_size = 16, color = (0, 0, 0, 255))
+
+        self.count_militia = Label("0", x=1440, y=520, font_size = 18, color = (0, 0, 0, 255))
+        self.spec_militia = Label("1/2", x=1440, y=480, font_size = 16, color = (0, 0, 0, 255))
+
+        self.count_looter = Label("0", x=1440, y=410, font_size = 18, color = (0, 0, 0, 255))
+        self.spec_looter = Label("2/1", x=1440, y=360, font_size = 16, color = (0, 0, 0, 255))
+
+        self.count_agressor = Label("0", x=1440, y=290, font_size = 18, color = (0, 0, 0, 255))
+        self.spec_agressor = Label("3/2", x=1440, y=240, font_size = 16, color = (0, 0, 0, 255))
+
+        self.count_defender = Label("0", x=1440, y=160, font_size = 18, color = (0, 0, 0, 255))
+        self.spec_defender = Label("1/5", x=1440, y=120, font_size = 16, color = (0, 0, 0, 255))
+
+        self.count_champion = Label("0", x=1440, y=50, font_size = 18, color = (0, 0, 0, 255))
+        self.spec_champion = Label("7/7", x=1440, y=10, font_size = 16, color = (0, 0, 0, 255))
+
+        
+        self.add(self.count_vagabound)
+        self.add(self.spec_vagabound)
+
+        self.add(self.count_militia)
+        self.add(self.spec_militia)
+
+        self.add(self.count_looter)
+        self.add(self.spec_looter)
+
+        self.add(self.count_agressor)
+        self.add(self.spec_agressor)
+
+        self.add(self.count_defender)
+        self.add(self.spec_defender)
+
+        self.add(self.count_champion)
+        self.add(self.spec_champion)
+
     def update(self, corpses, weapons, gold, miners, gatherers, goblins, hobgoblins, orcs,
-               madgnomes, necromancers):
+               madgnomes, necromancers, vagabounds, militians, looters, agressors, defenders, champions):
         self.count_corpses.element.text = str(corpses)
         self.count_weapons.element.text = str(weapons)
         self.count_gold.element.text = str(gold)
+        self.count_gatherers.element.text = str(gatherers)
+        self.count_miners.element.text = str(miners)
+        self.count_goblins.element.text = str(goblins)
+        self.count_hobgoblins.element.text = str(hobgoblins)
+        self.count_orcs.element.text = str(orcs)
+        self.count_madgnomes.element.text = str((madgnomes)//3)
+        self.count_necromancers.element.text = str(necromancers)
+        self.count_vagabound.element.text = str(vagabounds)
+        self.count_militia.element.text = str(militians)
+        self.count_looter.element.text = str(looters)
+        self.count_agressor.element.text = str(agressors)
+        self.count_defender.element.text = str(defenders)
+        self.count_champion.element.text = str(champions)
 
 class GUILayer(Menu):
     def __init__(self, logic):
@@ -165,61 +239,89 @@ class GUILayer(Menu):
 
         positions = []
         houses = []
+        self.cds = []
         
         ############   goblin house    ###################
         house_goblin = ImageMenuItem("resources/goblin_quarters.png",
-                                     self.logic.spawn, "goblin")
+                                     self.spawn, "goblin", 0)
         house_goblin.scale = house_scale
         houses.append(house_goblin)
         positions.append(spawn_place.get("goblin"))
+        self.cds.append(False)
 
         ############  hobgoblin house  ###################
 
         house_hobgoblin = ImageMenuItem("resources/hobgoblin_quarters.png",
-                                        self.logic.spawn, "hobgoblin")
+                                        self.spawn, "hobgoblin", 1)
         house_hobgoblin.scale = house_scale
         houses.append(house_hobgoblin)
         positions.append(spawn_place.get("hobgoblin"))
+        cd_hobgoblin = False
+        self.cds.append(False)
 
         ############     orc  house    ###################
 
         house_orc = ImageMenuItem("resources/orc_quarters.png",
-                                  self.logic.spawn, "orc")
+                                  self.spawn, "orc", 2)
         house_orc.scale = house_scale
         houses.append(house_orc)
         positions.append(spawn_place.get("orc"))
+        cd_orc = False
+        self.cds.append(False)
 
         ############  madgnome house   ##################
 
         house_madgnome = ImageMenuItem("resources/madgnome_quarters.png",
-                                       self.logic.spawn, "madgnome")
+                                       self.spawn, "madgnome", 3)
         house_madgnome.scale = house_scale
         houses.append(house_madgnome)
         positions.append(spawn_place.get("madgnome"))
+        cd_madgnome = False
+        self.cds.append(False)
 
         ############ necromancer house ###################
 
         house_necromancer = ImageMenuItem("resources/necromancer_quarters.png",
-                                          self.logic.spawn, "necromancer")
+                                          self.spawn, "necromancer", 4)
         house_necromancer.scale = house_scale
         houses.append(house_necromancer)
         positions.append(spawn_place.get("necromancer"))
+        cd_necromancer = False
+        self.cds.append(False)
 
         ############  gatherer  house  ###################
 
         house_gatherer = ImageMenuItem("resources/gatherer_quarters.png",
-                                       self.logic.spawn, "gatherer")
+                                       self.spawn, "gatherer", 5)
         house_gatherer.scale = house_scale
         houses.append(house_gatherer)
         positions.append(spawn_place.get("gatherer"))
+        cd_gatherer = False
+        self.cds.append(False)
 
         ############   miner   house   ###################
 
-        house_miner = ImageMenuItem ("resources/miner_quarters.png",
-                                     self.logic.spawn, "miner")
+        house_miner = ImageMenuItem("resources/miner_quarters.png",
+                                     self.spawn, "miner", 6)
         house_miner.scale = house_scale
         houses.append(house_miner)
         positions.append(spawn_place.get("miner"))
+        cd_miner = False
+        self.cds.append(False)
+
+        ###########   minion    help   ###################
+        minion_help = ImageMenuItem("resources/minion_help.png",
+                                    director.push, Scene(SoldiersLayer()))
+        minion_help.scale = 4
+        houses.append(minion_help)
+        positions.append((1500, 810))
+
+        ###########   hero    help     ###################
+        hero_help = ImageMenuItem("resources/hero_help.png",
+                                    director.push, Scene(HuntersLayer()))
+        hero_help.scale = 3.5
+        houses.append(hero_help)
+        positions.append((1350, 820))
 
         ############    create menu    ###################
 
@@ -240,19 +342,48 @@ class GUILayer(Menu):
         rot2 = Accelerate(RotateBy(-angle * 2, duration), 2)
         return rot + (rot2 + Reverse(rot2)) * 2 + Reverse(rot)
 
-    def start_stage(self):
-        self.logic.stage = True
-        self.logic.load_next_wave()
+    def spawn(self, minion, house_id):
+        if not self.cds[house_id]:
+            self.logic.spawn(minion)
+            self.cds[house_id] = True
+            cds = self.cds
+            self.do(Delay(building_cool_down) + CallFunc(self.stop_cd, house_id))
 
+    def stop_cd(self, house_id):
+        self.cds[house_id] = False
+
+class CollisionLayer(Layer):
+
+    is_event_handler = True
+
+    def __init__(self, logic):
+        super().__init__()
+
+        self.logic = logic
+
+    def on_mouse_press (self, x, y, buttons, modifiers):
+        self.posx, self.posy = director.get_virtual_coordinates (x, y)
+        
+        for x in self.logic.arena:
+            pos, hunter, sprite = x
+            if abs(sprite.x - self.posx) < col_radious or abs(sprite.y - self.posy) < col_radious:
+                hunter[1][1] -= 1
+                if hunter[1][1] <= 0:
+                    self.logic.arena.remove(x)
+                    self.logic.hunter_each[hunter[0]] -= 1
+                    self.logic.arena_grid[pos] = True
+                    self.logic.death_sounds[hunter[0]].play()
+                    sprite.kill()
+                    self.logic.corpses += 1
+            
 class DynamicLayer(Layer):
     def __init__(self):
         super().__init__()
         self.gathval = True
         self.minval = True
-
-
+        
     def invoke(self, minion):
-        mini = Sprite(load_animation("resources/"+minion+".gif"), position = spawn_place[minion])
+        mini = Sprite(load_animation("resources/" + minion + ".gif"), position = spawn_place[minion])
         mini.scale = minion_scale
         self.add(mini) 
 
@@ -292,6 +423,14 @@ class DynamicLayer(Layer):
                 mini1.do(MoveBy(minion_move_to[minion], minion_move_time) + CallFunc(mini1.kill))
                 self.minval = True
 
+    def challenge(self, type, pos):
+         hunter = Sprite(load_animation("resources/" + type + ".gif"), position = (random.randint(483, 826), 105))
+         hunter.scale = minion_scale
+         self.add(hunter)               
+         hunter.do(MoveTo(pos, minion_move_time)) 
+
+         return hunter
+
 class StaticLayer(Layer):
     def __init__(self, logic):
         super().__init__()
@@ -309,17 +448,17 @@ class GroundLayer(Layer):
 
         ws = director.get_window_size()
 
-        self.cave_sprite = Sprite("resources/cave.png")
-        self.cave_sprite.position = (ws[0]/2, ws[1]/2)
 
         self.background_sprite = Sprite("resources/background.png")
         self.background_sprite.position = (ws[0]/2, ws[1]/2)
 
         self.add(self.background_sprite, z=0)
-        self.add(self.cave_sprite, z=1)
 
 class RootLayer(Layer):
-    def __init__(self):
+
+     is_event_handler = True
+
+     def __init__(self):
         super().__init__()
 
         ws = director.get_window_size()
@@ -339,15 +478,24 @@ class RootLayer(Layer):
         self.add(GroundLayer(),               z=0)
         self.add(StaticLayer(self.logic),     z=1)
         self.add(dynamic_layer,               z=2)
-        self.add(GUILayer(self.logic),        z=3)
-        self.add(hud_layer,                   z=4)
-        self.add(wave_report,                 z=5)
+        self.add(CollisionLayer(self.logic),  z=3)
+        self.add(GUILayer(self.logic),        z=4)
+        self.add(hud_layer,                   z=6)
+        self.add(wave_report,                 z=7)
+
+     def on_mouse_press (self, x, y, buttons, modifiers):
+        print( director.get_virtual_coordinates (x, y))
 
 
 def main():
     director.init(**window)
     main_scene = Scene(RootLayer())
-    from pyglet.media import load
+
+    player = Player()
+    player.queue(load("resources/audios/cave.wav"))
+    player.eos_action = player.EOS_LOOP
+    player.play()
+
     director.run(main_scene)
 
 
